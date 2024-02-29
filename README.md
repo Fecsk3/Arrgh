@@ -20,7 +20,7 @@ Egy nyelvi modell integrálásával az alkalmazás még hatékonyabbá válhat a
 
 3. **Állapotkövetés:** Lehetőség nyomon követni a kártyák állapotát és azokat az oszlopokat, amelyekben éppen tartózkodnak.
 
-4. _**Dokumentáció generálása:** Az alkalmazás lehetőséget biztosít egy nyelvi modell integrálására, amely képes automatikusan generálni dokumentációkat a projektekhez vagy feladatokhoz. Ez növeli az átláthatóságot és megkönnyíti a munkafolyamatok megértését._
+4. **Dokumentáció generálása:** _Az alkalmazás lehetőséget biztosít egy nyelvi modell integrálására, amely képes automatikusan generálni dokumentációkat a projektekhez vagy feladatokhoz. Ez növeli az átláthatóságot és megkönnyíti a munkafolyamatok megértését._
 
 5. **Feladatok kiosztása:** A felhasználók könnyedén kioszthatnak feladatokat egymásnak az alkalmazáson keresztül. _A nyelvi modell segítségével az alkalmazás javaslatokat tehet a feladatok kiosztásához, figyelembe véve az egyes felhasználók képességeit és elérhetőségét._
 
