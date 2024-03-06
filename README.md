@@ -35,6 +35,7 @@ Egy nyelvi modell integrálásával az alkalmazás még hatékonyabbá válhat a
 ## Csapattagok
 
 + Tóth Dorina Ildikó (FYA26Y)
++ Sipos Valentin Dominik (JPCM1W)
 
 ---
 
