@@ -79,13 +79,9 @@ Mindezeken keresztül hatékonyabban tudnak együtt dolgozni és kommunikálni a
 | Id | Követelmény | Funkció |
 | :---: | --- | --- |
 | K1 | Kártyák és oszlopok | Kártyák létrehozása, szerkesztése és mozgatása |
-
 | K2 | Projektek és feladatok kezelése | Projektek és feladatok létrehozása, szerkesztése és törlése |
-
 | K3 | Állapotkövetés | Kártyák állapotának nyomon követése |
-
 | K4 | Dokumentáció generálása | Automatikus dokumentáció generálása nyelvi modellel |
-
 | K5 | Feladatok kiosztása | Feladatok kiosztása javaslatok alapján |
 
 ## 11 Fogalomszótár
