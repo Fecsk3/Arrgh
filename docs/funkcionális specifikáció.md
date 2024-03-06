@@ -43,13 +43,9 @@ A Kanban alapú modell lehetővé teszi a folyamatok átlátható kezelését é
 | Id | Modul | Név | Leírás |
 | :---: | --- | --- | --- |
 | K1 | Kártyák és oszlopok | Feladatok reprezentálása kártyákon és azok mozgatása oszlopok között | Lehetőség kártyák létrehozására, szerkesztésére és mozgatására az oszlopok között |
-
 | K2 | Projektek és feladatok kezelése | Projektek és feladatok létrehozása, szerkesztése és törlése | Funkciók projektek és feladatok kezelésére, valamint ezek hozzárendelésére a megfelelő kártyákhoz |
-
 | K3 | Állapotkövetés | Kártyák állapotának nyomon követése | Lehetőség nyomon követni a kártyák állapotát és azokat az oszlopokat, amelyekben éppen tartózkodnak |
-
 | K4 | Dokumentáció generálása | Automatikus dokumentáció generálása projektekhez vagy feladatokhoz | Integráció egy nyelvi modelllel a dokumentáció automatikus generálásához |
-
 | K5 | Feladatok kiosztása | Feladatok kiosztása egymásnak a csapat tagjai között | Lehetőség feladatok kiosztására, javaslatokat adva a nyelvi modell alapján |
 
 ## 6. Használati esetek
