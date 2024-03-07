@@ -5,23 +5,28 @@
     <title>Regisztráció</title>
 </head>
 <body>
-    <h2>Regisztráció</h2>
-    <form method="post">
-        {% csrf_token %}
-        <label for="id_username">Felhasználónév</label>
-        {{ form.username }}
-        <label for="id_first_name">Keresztnév</label>
-        {{ form.first_name }}
-        <label for="id_last_name">Vezetéknév</label>
-        {{ form.last_name }}
-        <label for="id_email">Email-cím</label>
-        {{ form.email }}
-        <label for="id_password1">Jelszó</label>
-        {{ form.password1 }}
-        <label for="id_password2">Jelszó újra</label>
-        {{ form.password2 }}
-        <button type="submit">Regisztráció</button>
-    </form>
-    <p>Van már fiókod? <a href="{% url 'login' %}">Jelentkezz be!</a></p>
+    <main>
+        <h2>Regisztráció</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="id_username">Felhasználónév</label>
+            {{ form.username }}
+            <label for="id_first_name">Keresztnév</label>
+            {{ form.first_name }}
+            <label for="id_last_name">Vezetéknév</label>
+            {{ form.last_name }}
+            <label for="id_email">Email-cím</label>
+            {{ form.email }}
+            <label for="id_password1">Jelszó</label>
+            {{ form.password1 }}
+            <label for="id_password2">Jelszó újra</label>
+            {{ form.password2 }}
+            <button type="submit">Regisztráció</button>
+        </form>
+        <p>Van már fiókod? <a href="{% url 'login' %}">Jelentkezz be!</a></p>
+    </main>
+    <footer>
+        <p>&copy; 2024 ☠ Ahoy ☠</p>
+    </footer>
 </body>
 </html>
