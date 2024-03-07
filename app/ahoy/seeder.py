@@ -1,7 +1,7 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ahoy.settings')
 django.setup()
 
 from django.contrib.auth.models import User
