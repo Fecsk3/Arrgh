@@ -7,7 +7,8 @@
     <title>Bejelentkezés</title>
 </head>
 <body>
-    <h2>Bejelentkezés</h2>
+    <main>
+        <h2>Bejelentkezés</h2>
         <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
             {{ form }}
@@ -15,14 +16,18 @@
         </form>
         <p>Nincs még fiókja? <a href="{% url 'register' %}" id="registerLink">Regisztráció</a></p>
 
-{% if messages %}
-    {% for message in messages %}
-    <script>
-        window.onload = function() {
-            alert("{{ message }}");
-        };
-    </script>
-    {% endfor %}
-{% endif %}
+        {% if messages %}
+            {% for message in messages %}
+            <script>
+                window.onload = function() {
+                    alert("{{ message }}");
+                };
+            </script>
+            {% endfor %}
+        {% endif %}
+    </main>
+    <footer>
+        <p>&copy; 2024 ☠ Ahoy ☠</p>
+    </footer>
 </body>
 </html>
