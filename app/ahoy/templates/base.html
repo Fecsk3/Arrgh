@@ -1,15 +1,18 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Main{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css"/>
 </head>
 
 <body>
     <nav>
         <ul>
             <li><a href="{% url 'index' %}">Főoldal</a></li>
+            
             <li style="margin-left: auto;"><a href="{% url 'logout_view' %}" class="logout">Kijelentkezés</a></li>
         </ul>
     </nav>
