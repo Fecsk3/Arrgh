@@ -36,7 +36,7 @@ Egy nyelvi modell integrálásával az alkalmazás még hatékonyabbá válhat a
 
 + Tóth Dorina Ildikó (FYA26Y)
 + Sipos Valentin Dominik (JPCM1W)
-
++ Kovácspál Bálint István (Q0AM99)
 ---
 
 ## Senior
