@@ -69,7 +69,7 @@ Végül, a csapat tagjai közötti kommunikáció is könnyebbé válik ezen esz
 
 | Kép | Leírás |
 | :-----------: | :-----------: |
-| ![regisztracio.png](https://github.com/Fecsk3/Arrgh/blob/main/docs/img/regisztracio.png) | A regisztrációs oldal tervezete. Ez az a rész, ahol az oldalra látogató olvasók pár adat megadásával máris az oldal felhasználói közé tartozhat. |
+| ![regisztracio.png](https://github.com/Fecsk3/Arrgh/blob/main/docs/img/regisztracio.png) | A regisztrációs oldal tervezete. Ez az a rész, ahol az oldalra látogatók pár adat megadásával máris az oldal felhasználói közé tartozhat. |
 | ![bejelentkezes.png](https://github.com/Fecsk3/Arrgh/blob/main/docs/img/bejelentkezes.png) | A bejelentkező oldal tervezete. Ez az a rész, ahol a már előzetesen regisztrált felhasználók, pár adat megadásával bármikor beléphetnek az oldalra. |
 | ![fooldal.png](https://github.com/Fecsk3/Arrgh/blob/main/docs/img/fooldal.png) | A főoldal tervezete. Szükséges egy profillal rendelkezni, ha erre az oldalra térnek az emberk |
 
