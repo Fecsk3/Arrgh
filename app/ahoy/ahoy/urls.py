@@ -22,6 +22,7 @@ urlpatterns = [
     path('', include('index.urls')),
     path('', include('register.urls')),
     path('', include('login.urls')),
+    path('', include('kanban.urls')),
     path('', RedirectView.as_view(url='/login/')),
     path('admin/', admin.site.urls),
 ]
