@@ -10,10 +10,10 @@
     <h2>{{ board.board_name }}</h2>
     <div class="board">
         {% for title in board.titles.all %}
-        <div class="coloumn">
-            <div class="title-cell">{{ title.title_name }}</div>
+        <div class="coloumn" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="title-cell" draggable="true" ondragstart="drag(event)">{{ title.title_name }}</div>
                 {% for task in title.tasks.all %}
-                    <div class="task">
+                    <div class="task" draggable="true" ondragstart="drag(event)">
                         <h4>{{ task.task_name }}</h4>
                         <p>{{ task.description }}</p>
                     </div>
@@ -25,14 +25,15 @@
 </div>
 
 {% if messages %}
-{% for message in messages %}
-<script>
-    window.onload = function() {
-        alert("{{ message }}");
-    };
-</script>
-{% endfor %}
+    {% for message in messages %}
+        <script>
+            window.onload = function() {
+                alert("{{ message }}");
+            };
+        </script>
+    {% endfor %}
 {% endif %}
+<script src="{% static 'js/kanban.js' %}"></script>
 
 <link rel="stylesheet" href="{% static 'css/kanban.css' %}" type="text/css"/>
 {% endblock %}
