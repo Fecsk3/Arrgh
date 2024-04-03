@@ -4,7 +4,7 @@ from .models import Board, Title, Task
 
 @login_required(redirect_field_name="bejelentkezes_szukseges")
 def kanban(request):
-    # message = request.GET.get('message', None) 
+    message = request.GET.get('message', None) 
 
     boards = Board.objects.prefetch_related('titles__tasks').all()
     
@@ -12,8 +12,7 @@ def kanban(request):
         'boards': boards
     }           
 
-    return render(request, 'kanban.html', context)
     if (message):
         return render(request, 'kanban.html', {'message': message})
     else:
-        return render(request, 'kanban.html')
+        return render(request, 'kanban.html', context)
