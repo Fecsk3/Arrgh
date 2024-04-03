@@ -25,14 +25,15 @@
 </div>
 
 {% if messages %}
-{% for message in messages %}
-<script>
-    window.onload = function() {
-        alert("{{ message }}");
-    };
-</script>
-{% endfor %}
+    {% for message in messages %}
+        <script>
+            window.onload = function() {
+                alert("{{ message }}");
+            };
+        </script>
+    {% endfor %}
 {% endif %}
+<script src="{% static 'js/kanban.js' %}"></script>
 
 <link rel="stylesheet" href="{% static 'css/kanban.css' %}" type="text/css"/>
 {% endblock %}
