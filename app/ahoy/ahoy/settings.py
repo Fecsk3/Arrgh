@@ -133,6 +133,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["arrgh.com","localhost", "127.0.0.1"]
