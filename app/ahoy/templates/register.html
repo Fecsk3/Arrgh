@@ -5,29 +5,24 @@
     <meta charset="UTF-8">
     <meta lang="hu">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regisztráció</title>
+    <title>Sign Up</title>
     <link rel="icon" href="{% static 'img/skull.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
 </head>
 <body>
     <main>
-        <h2>Regisztráció</h2>
+        <h2>Create an account</h2>
         <form method="post">
             {% csrf_token %}
-            <label for="id_username">Felhasználónév</label>
-            {{ form.username }}
-            <label for="id_first_name">Keresztnév</label>
-            {{ form.first_name }}
-            <label for="id_last_name">Vezetéknév</label>
-            {{ form.last_name }}
-            <label for="id_email">Email-cím</label>
-            {{ form.email }}
-            <label for="id_password1">Jelszó</label>
-            {{ form.password1 }}
-            <label for="id_password2">Jelszó újra</label>
-            {{ form.password2 }}
-            <button type="submit">Regisztráció</button>
+            <input type="text" name="username" placeholder="username">
+            <input type="text" name="first_name" placeholder="Firstname">
+            <input type="text" name="last_name" placeholder="Lastname">
+            <input type="email" name="email" placeholder="email@email.com">
+            <input type="password" name="password1" placeholder="password">
+            <input type="password" name="password2" placeholder="password again">
+            <button type="submit" class="btn">Sign Up</button>
         </form>
-        <p>Van már fiókod? <a href="{% url 'login' %}">Jelentkezz be!</a></p>
+        <p id="jobbra"> Already have an account? <a href="{% url 'login' %}" id="loginLink">Sign In!</a></p>
     </main>
     <footer>
         <p>&copy; 2024 ☠ Ahoy ☠</p>

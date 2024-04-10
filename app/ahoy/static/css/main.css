@@ -58,6 +58,10 @@ nav a:hover {
     background: #b0351f;
 }
 
+#profilbox{
+    align-content: center;
+}
+
 /* #endregion */
 
 footer {
