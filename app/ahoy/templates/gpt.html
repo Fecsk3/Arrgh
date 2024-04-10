@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}GPT{% endblock %}
+
+{% block content %}
+
+    <form method="post" action="{% url 'gpt' %}" >
+        {% csrf_token %}
+        <label for="input"><h1>Enter your input:</h1></label><br> 
+        <textarea id="input" name="input" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Generate Response">
+    </form>
+
+    <div id="response-container">
+        <h1>Generated Response:</h1>
+        {% if response %}
+            <p id="response" style="background-color: wheat; color: black;"></p>
+        {% endif %}
+    </div>
+
+    <link rel="stylesheet" href="{% static 'css/gpt.css' %}" type="text/css"/>
+{% endblock %}
