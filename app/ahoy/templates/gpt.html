@@ -5,19 +5,24 @@
 
 {% block content %}
 
-    <form method="post" action="{% url 'gpt' %}" >
+<div class="gpt-container">
+    <h2>Enter your input:</h2>
+    <form method="POST" action="{% url 'gpt' %}">
         {% csrf_token %}
-        <label for="input"><h1>Enter your input:</h1></label><br> 
         <textarea id="input" name="input" rows="4" cols="50"></textarea><br>
         <input type="submit" value="Generate Response">
     </form>
 
-    <div id="response-container">
-        <h1>Generated Response:</h1>
-        {% if response %}
-            <p id="response" style="background-color: wheat; color: black;"></p>
-        {% endif %}
-    </div>
+    {% if response %}
+        <div class="response-container">
+        <h3>Generated Response:</h3>
+        <p id="response" style="background-color: wheat; color: black;">{{ response }}</p>
+        </div>
+    {% elif error_message %}
+        <p class="error" style="background-color: red; color: white;">{{ error_message }}</p>
+    {% endif %}
+</div>
 
-    <link rel="stylesheet" href="{% static 'css/gpt.css' %}" type="text/css"/>
+<link rel="stylesheet" href="{% static 'css/gpt.css' %}" type="text/css" />
+
 {% endblock %}
