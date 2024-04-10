@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'register',
     'login',
     'kanban',
+    'gpt',
 ]
 
 MIDDLEWARE = [
