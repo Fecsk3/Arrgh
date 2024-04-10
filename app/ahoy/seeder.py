@@ -1,5 +1,6 @@
 import os
 import django
+from django.db.utils import IntegrityError
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ahoy.settings')
 django.setup()
@@ -18,10 +19,14 @@ users_data = [
 try:
     for data in users_data:
         is_superuser = data.pop('is_superuser', False)
-        user = User.objects.create_user(**data)
-        if is_superuser:
-            user.is_superuser = True
-            user.save()
+        try:
+            user = User.objects.create_user(**data)
+            if is_superuser:
+                user.is_superuser = True
+                user.save()
+        except IntegrityError:
+            print(f'Az adat már szerepel a táblában: {data["username"]}')
+            continue
 except Exception as e:
     print(f'Hiba történt az adatok feltöltésekor: {e}')
 else:
