@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from freeGPT.Client.gpt4 import Completion
+# from freeGPT.Client.gpt4 import Completion # unavailable
+from freeGPT.Client.gpt3 import Completion
 
 @login_required(redirect_field_name="bejelentkezes_szukseges")
 def gpt(request):
