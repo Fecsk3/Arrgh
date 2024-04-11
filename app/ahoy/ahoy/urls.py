@@ -19,8 +19,12 @@ from django.urls import include, path, re_path
 from django.views.generic import RedirectView
 from django.views.static import serve
 from django.conf import settings
+from documents.views import documents_markdown_files_list, download_markdown_file
+
 
 urlpatterns = [
+    path('documents/', documents_markdown_files_list, name='documents'),
+    path('download-markdown-file/<int:file_id>/', download_markdown_file, name='download_markdown_file'),
     re_path(r'static/(?P<path>.*)', serve, {'document_root': settings.STATIC_ROOT}),
     path('', include('index.urls')),
     path('', include('register.urls')),

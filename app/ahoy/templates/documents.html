@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Markdown Files List</title>
+</head>
+<body>
+    <h1>Markdown Files</h1>
+    <ul>
+        {% for file in markdown_files %}
+            <li><a href="{% url 'download_markdown_file' file.id %}">{{ file.name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'kanban',
     'gpt',
     'profil',
+    'documents',
 ]
 
 MIDDLEWARE = [
