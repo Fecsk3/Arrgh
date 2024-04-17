@@ -4,24 +4,44 @@
 {% block title %}GPT{% endblock %}
 
 {% block content %}
+<table class="full-width-table">
+    <tr>
+        <td style="vertical-align: top" ><div class="gpt-container">
+    
+            <h2>Enter your input:</h2>
+            <form method="POST" action="{% url 'gpt' %}">
+                {% csrf_token %}
+                <textarea id="input" name="input" rows="4" cols="50"></textarea><br>
+                <input type="submit" value="Generate Response">
+            </form>
+        
+            {% if response %}
+                <div class="response-container">
+                <h3>Generated Response:</h3>
+                <p id="response" style="background-color: wheat; color: black;">{{ response }}</p>
+                </div>
+            {% elif error_message %}
+                <p class="error" style="background-color: red; color: white;">{{ error_message }}</p>
+            {% endif %}
+        </div></td>
+        <td style="vertical-align: top"><div class="spec-description">
+            <h2>GPT Markdown Dokumentum Generátor</h2>
+            <p>A GPT Markdown Dokumentum Generátor egy mesterséges intelligencia rendszer, amely képes automatikusan generálni funkcionális specifikációkat, követelmény specifikációkat és rendszerterveket markdown formátumban.</p>
+            <p>A projekt célja, hogy megkönnyítse a dokumentáció készítését különböző informatikai projektekhez, így időt és erőforrásokat takarítva meg a fejlesztők számára.</p>
+            <h3>Funkcionális Specifikáció Generálása</h3>
+            <p>A rendszer képes automatikusan létrehozni funkcionális specifikációkat a felhasználók által megadott bemeneti adatok alapján.</p>
+            <h3>Követelmény Specifikáció Generálása</h3>
+            <p>A rendszer definiálja a projekt követelményeit, és generálja a megfelelő dokumentumot, amely tartalmazza ezeket a követelményeket.</p>
+            <h3>Rendszerterv Generálása</h3>
+            <p>A rendszerterv részletesen bemutatja a projekt architektúráját és működését, segítve a fejlesztőket a projekt megértésében és karbantartásában.</p>
+            <h3>Dokumentumok Letöltése</h3>
+            <p>A generált dokumentumok letölthetők a projekt weboldaláról, lehetővé téve a felhasználók számára, hogy könnyen hozzáférjenek és használják azokat.</p>
+        </div></td>
+    </tr>
+</table>
 
-<div class="gpt-container">
-    <h2>Enter your input:</h2>
-    <form method="POST" action="{% url 'gpt' %}">
-        {% csrf_token %}
-        <textarea id="input" name="input" rows="4" cols="50"></textarea><br>
-        <input type="submit" value="Generate Response">
-    </form>
 
-    {% if response %}
-        <div class="response-container">
-        <h3>Generated Response:</h3>
-        <p id="response" style="background-color: wheat; color: black;">{{ response }}</p>
-        </div>
-    {% elif error_message %}
-        <p class="error" style="background-color: red; color: white;">{{ error_message }}</p>
-    {% endif %}
-</div>
+
 
 <link rel="stylesheet" href="{% static 'css/gpt.css' %}" type="text/css" />
 
