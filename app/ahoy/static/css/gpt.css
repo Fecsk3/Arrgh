@@ -1,0 +1,60 @@
+/* gpt.css */
+
+/* Container */
+.gpt-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+/* Title input */
+input#id_title {
+    width: 85%; /* Make the title input full width */
+    padding: 10px; /* Add padding */
+    margin-bottom: 20px; /* Add margin bottom */
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+}
+
+/* Textarea */
+textarea {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    resize: vertical; /* Allow vertical resizing */
+    color: #333; /* Default text color */
+    height: 50px; 
+}
+
+/* Submit button */
+.gpt-container button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #28a745; /* Green color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.gpt-container button[type="submit"]:hover {
+    background-color: #218838; /* Darker shade of green on hover */
+}
+
+.gpt-container button[type="submit"]:focus {
+    outline: none; /* Remove focus outline */
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5); /* Add focus border */
+}
+
+/* Error message */
+.error-message {
+    background-color: #dc3545;
+    color: #ffffff;
+    padding: 10px 15px;
+    border-radius: 5px;
+}

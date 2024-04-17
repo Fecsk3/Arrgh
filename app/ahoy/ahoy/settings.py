@@ -15,6 +15,13 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Set default encoding
+DEFAULT_CHARSET = 'utf-8'
+
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -125,15 +132,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-  
 
-if DEBUG:
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
-  STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-else:
+# if DEBUG:
 
-  STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#   STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# else:
+
+#   STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # Default primary key field type
@@ -143,6 +155,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'
 
-DEBUG = False
+# DEBUG = False
 
 ALLOWED_HOSTS = ["arrgh.com","localhost", "127.0.0.1"]
