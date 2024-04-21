@@ -15,6 +15,13 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Set default encoding
+DEFAULT_CHARSET = 'utf-8'
+
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGS_DIR = BASE_DIR / 'logs'
 LOGGING = {
@@ -69,6 +76,8 @@ INSTALLED_APPS = [
     'login',
     'kanban',
     'gpt',
+    'profil',
+    'documents',
 ]
 
 MIDDLEWARE = [
@@ -150,6 +159,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]

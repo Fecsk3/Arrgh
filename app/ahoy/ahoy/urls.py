@@ -15,15 +15,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView
+from django.views.static import serve
+from django.conf import settings
+from documents.views import documents_markdown_files_list, download_markdown_file
+
 
 urlpatterns = [
+    path('documents/', documents_markdown_files_list, name='documents'),
+    path('download-markdown-file/<int:file_id>/', download_markdown_file, name='download_markdown_file'),
+    re_path(r'static/(?P<path>.*)', serve, {'document_root': settings.STATIC_ROOT}),
     path('', include('index.urls')),
     path('', include('register.urls')),
     path('', include('login.urls')),
     path('', include('kanban.urls')),
     path('', include('gpt.urls')),
+    path('', include('profil.urls')),
     path('', RedirectView.as_view(url='/login/')),
     path('admin/', admin.site.urls),
 ]

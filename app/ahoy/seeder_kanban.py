@@ -1,10 +1,54 @@
-import os
-import django
+import sqlite3
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ahoy.settings')
-django.setup()
+def seed_boards(cursor, board_name):
+    try:
+        cursor.execute("SELECT id FROM kanban_board WHERE board_name=?", (board_name,))
+        board = cursor.fetchone()
+        if not board:
+            cursor.execute("INSERT INTO kanban_board (board_name) VALUES (?)", (board_name,))
+            print(f"Board '{board_name}' seeded successfully.")
+            return cursor.lastrowid
+        else:
+            print(f"Board '{board_name}' already exists.")
+            return board[0]
+    except sqlite3.Error as e:
+        print(f'Error occurred while seeding board: {e}')
+        return None
 
-from kanban.models import Board, Title, Task  # Import your models
+def seed_titles(cursor, board_id, title_data):
+    try:
+        for title_info in title_data:
+            title_name = title_info['title_name']
+            cursor.execute("SELECT id FROM kanban_title WHERE title_name=? AND board_id=?", (title_name, board_id))
+            title = cursor.fetchone()
+            if not title:
+                cursor.execute("INSERT INTO kanban_title (title_name, board_id) VALUES (?, ?)", (title_name, board_id))
+                print(f"Title '{title_name}' seeded successfully under Board ID '{board_id}'.")
+                title_id = cursor.lastrowid
+                seed_tasks(cursor, title_id, title_info.get('tasks', []))
+            else:
+                print(f"Title '{title_name}' already exists under Board ID '{board_id}'.")
+    except sqlite3.Error as e:
+        print(f'Error occurred while seeding titles: {e}')
+
+def seed_tasks(cursor, title_id, task_data):
+    try:
+        for task_info in task_data:
+            task_name = task_info['task_name']
+            description = task_info['description']
+            cursor.execute("SELECT id FROM kanban_task WHERE task_name=? AND title_id=?", (task_name, title_id))
+            task = cursor.fetchone()
+            if not task:
+                cursor.execute("INSERT INTO kanban_task (task_name, description, title_id) VALUES (?, ?, ?)", (task_name, description, title_id))
+                print(f"Task '{task_name}' seeded successfully under Title ID '{title_id}'.")
+            else:
+                print(f"Task '{task_name}' already exists under Title ID '{title_id}'.")
+    except sqlite3.Error as e:
+        print(f'Error occurred while seeding tasks: {e}')
+
+# Connect to the database
+conn = sqlite3.connect('db.sqlite3')
+cursor = conn.cursor()
 
 board_data = {
     'board_name': 'Kanban',
@@ -53,12 +97,20 @@ board_data = {
 }
 
 try:
-    board = Board.objects.create(board_name=board_data['board_name'])
-    for title_data in board_data['titles']:
-        title = Title.objects.create(title_name=title_data['title_name'], board_id=board)
-        for task_data in title_data['tasks']:
-            Task.objects.create(task_name=task_data['task_name'], description=task_data['description'], title_id=title, board_id=board)
-except Exception as e:
-    print(f'Hiba történt az adatok feltöltésekor: {e}')
-else:
-    print('Az adatok már feltöltve')
+    # Seed boards
+    board_id = seed_boards(cursor, board_data['board_name'])
+
+    # Seed titles and tasks
+    seed_titles(cursor, board_id, board_data['titles'])
+
+    # Commit the transaction
+    conn.commit()
+    print('Data seeding completed successfully.')
+
+except sqlite3.Error as e:
+    print(f'Error occurred during data seeding: {e}')
+    conn.rollback()
+
+finally:
+    # Close the connection
+    conn.close()

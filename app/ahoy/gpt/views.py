@@ -1,12 +1,13 @@
+
 import logging
+from pathlib import Path
+from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from freeGPT.Client.gpt3 import Completion
 from .forms import ProjectForm
 from django.contrib import messages
 import markdown2
-from pathlib import Path
-from django.conf import settings
 from django.utils.html import escape
 
 logger = logging.getLogger(__name__)
@@ -170,7 +171,7 @@ def description_for_project(form_data):
     description += f"+ **Project Timeline:** {form_data.get('timeline')}\n"
     description += f"+ **Additional Information:** {form_data.get('additional_info')}\n"
     return description
-
+  
 def load_templates():
     templates_dir = Path(settings.BASE_DIR) / 'static' / 'docs'
 
@@ -187,7 +188,6 @@ def load_templates():
         with open(template_file, 'r') as f:
             template_content = f.read()
             templates_content.append(template_content)
-
     return templates_content
 
 def save_templates_responses(template_responses):

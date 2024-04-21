@@ -5,18 +5,20 @@
     <meta charset="UTF-8">
     <meta lang="hu">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bejelentkezés</title>
+    <title>Sign In</title>
     <link rel="icon" href="{% static 'img/skull.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body>
     <main>
-        <h2>Bejelentkezés</h2>
+        <h2>Sign In</h2>
         <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
-            {{ form }}
-            <button type="submit" class="btn">Bejelentkezés</button>
+            <input type="text" name="username" placeholder="username" required>
+            <input type="password" name="password" placeholder="password" required>
+            <button type="submit" class="btn">Sign In</button>
         </form>
-        <p>Nincs még fiókja? <a href="{% url 'register' %}" id="registerLink">Regisztráció</a></p>
+        <p id="jobbra">Don't have an account? <a href="{% url 'register' %}" id="registerLink">Sign Up!</a></p>
 
         {% if messages %}
             {% for message in messages %}
