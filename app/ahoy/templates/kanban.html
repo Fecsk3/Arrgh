@@ -7,33 +7,88 @@
 
 <div class="container">
     {% for board in boards %}
-    <h2>{{ board.board_name }}</h2>
-    <div class="board">
-        {% for title in board.titles.all %}
-        <div class="coloumn" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div class="title-cell" draggable="true" ondragstart="drag(event)">{{ title.title_name }}</div>
-                {% for task in title.tasks.all %}
-                    <div class="task" draggable="true" ondragstart="drag(event)">
-                        <h4>{{ task.task_name }}</h4>
-                        <p>{{ task.description }}</p>
-                    </div>
-                {% endfor %}
+        <h2>{{ board.title  }}</h2>
+        <div class="board" ondrop="drop(event)" ondragover="allowDrop(event)">
+            {% for column in board.columns.all %}
+                <div class="column" data-column-id="{{ column.id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="coloumn-title"><h3>{{ column.title }}</h3></div>
+                    {% for card in column.cards.all %}
+                        <div class="cards">
+                            <div class="card" draggable="true" ondragstart="drag(event)" id="card-{{ card.id }}">
+                                <div class="card-title">
+                                    <h4>{{ card.title }}</h4>
+                                </div>
+                                <p>{{ card.description }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
     {% endfor %}
 </div>
 
-{% if messages %}
-    {% for message in messages %}
-        <script>
-            window.onload = function() {
-                alert("{{ message }}");
-            };
-        </script>
-    {% endfor %}
-{% endif %}
-<script src="{% static 'js/kanban.js' %}"></script>
-
 <link rel="stylesheet" href="{% static 'css/kanban.css' %}" type="text/css"/>
+
+<script>
+    function allowDrop(event) {
+    event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        console.log('Drop event triggered');
+        console.log('Event target:', event.target);
+        var data = event.dataTransfer.getData("text");
+        var targetColumn = event.target.closest('.column');
+        console.log('Target column:', targetColumn);
+        if (targetColumn && targetColumn.dataset.columnId) {
+            var targetColumnId = targetColumn.dataset.columnId;
+            var cardId = data.split('-')[1];
+            moveCard(cardId, targetColumnId); 
+            targetColumn.querySelector('.cards').appendChild(document.getElementById(data));
+        }
+    }
+
+    function moveCard(cardId, targetColumnId) {
+        var csrfToken = getCookie('csrftoken');
+        var data = {'csrfmiddlewaretoken': csrfToken, 'card_id': cardId, 'column_id': targetColumnId};
+        fetch(`/move-card/${cardId}/${targetColumnId}/`, {  
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Card moved successfully');
+            } else {
+                console.error('Error moving card');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+        }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+</script>
 {% endblock %}

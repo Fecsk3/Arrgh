@@ -1,22 +1,27 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Board(models.Model):
-    board_name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.board_name
+        return self.title
 
-class Title(models.Model):
-    title_name = models.CharField(max_length=100)
-    board_id = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='titles')
-
-    def __str__(self):
-        return self.title_name
-
-class Task(models.Model):
-    task_name = models.CharField(max_length=100)
-    description = models.TextField()
-    title_id = models.ForeignKey(Title, on_delete=models.CASCADE, related_name='tasks')
+class Column(models.Model):
+    title = models.CharField(max_length=100)
+    board = models.ForeignKey(Board, related_name='columns', on_delete=models.CASCADE)
+    order = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.task_name
+        return self.title
+
+class Card(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    column = models.ForeignKey(Column, related_name='cards', on_delete=models.CASCADE)
+    order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title
