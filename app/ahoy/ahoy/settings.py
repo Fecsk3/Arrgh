@@ -12,9 +12,14 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+# Set default encoding
+DEFAULT_CHARSET = 'utf-8'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGS_DIR = BASE_DIR / 'logs'
 LOGGING = {
@@ -53,7 +58,6 @@ SECRET_KEY = 'django-insecure-y8e-q53e-1vf=0-g21+^rlckkf@+z@(-$lhdnb%kc6ot0hu87g
 DEBUG = True
 
 ALLOWED_HOSTS = ["arrgh.com", "localhost", "127.0.0.1"]
-
 
 # Application definition
 
@@ -152,7 +156,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-  
+
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]

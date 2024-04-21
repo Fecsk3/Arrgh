@@ -2,6 +2,9 @@ import logging
 from pathlib import Path
 from django.conf import settings
 from .forms import ProjectForm
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from freeGPT.Client.gpt3 import Completion
 from django.contrib import messages
 import markdown2
 from django.utils.html import escape
@@ -109,6 +112,12 @@ def gpt(request):
 
             elif 'save_documents' in request.POST:
                 try:                        
+                    summary = f"Requirements Specification\n" \
+                                    f"Functional Specification\n" \
+                                    f"System Plan"
+                    summary_lines = summary.split('\n')
+                    form_submitted = True
+
                     template_responses = []
                     template_responses.append(request.session['requirements_specification'])
                     template_responses.append(request.session['functional_specification'])
@@ -116,13 +125,19 @@ def gpt(request):
                     successful_saving = save_templates_responses(template_responses)
                     if successful_saving:
                         messages.success(request, "Generated documents successfully saved.")
+                        return render_template_with_data('gpt.html', {'summary': summary_lines, 'documents_saved': successful_saving})
                     else:
                         messages.error(request, "Error saving generated documents.")
+                        return render_template_with_data('gpt.html', {'summary': summary_lines})
+                except FileNotFoundError as e:
+                    messages.error(request, f"Error: File not found - {e}")
+                except PermissionError as e:
+                    messages.error(request, f"Error: Permission denied - {e}")
                 except Exception as e:
-                    messages.error(request, f"Error saving generated documents: {e}")
+                    messages.error(request, f"Error: {e}")
                 finally:
                     request.session.pop('project_description', None)
-            
+                    
             elif 'generate_trello_cards' in request.POST:
                 try:
                     successful_generation = generate_trello_cards(request.session)
@@ -167,7 +182,7 @@ def description_for_project(form_data):
     description += f"+ **Project Timeline:** {form_data.get('timeline')}\n"
     description += f"+ **Additional Information:** {form_data.get('additional_info')}\n"
     return description
-  
+
 def load_templates():
     templates_dir = Path(settings.BASE_DIR) / 'static' / 'docs'
 
@@ -190,7 +205,7 @@ def save_templates_responses(template_responses):
     saved_files = []
     media_root = Path(settings.MEDIA_ROOT)
     output_dir = media_root / 'user_generated_docs'
-    
+
     template_filenames = [
         'requirements_specification_generated.md',
         'functional_specification_generated.md',
@@ -200,6 +215,10 @@ def save_templates_responses(template_responses):
     try:
         for filename, response in zip(template_filenames, template_responses):
             file_path = output_dir / filename
+            
+            if file_path.exists():
+                logger.warning(f"File {filename} already exists. Overwriting.")
+            
             with open(file_path, 'w') as file:
                 file.write(response)
             saved_files.append(file_path)

@@ -6,7 +6,6 @@
 {% block content %}
 
 <div class="container">
-    
     {% if not form_submitted %}
     <div class="form-container">
         <h1>Step 1: Enter Project Specifications</h1>
@@ -124,15 +123,17 @@
             </div>
         </form>
         <hr>
-        <form method="POST" action="{% url 'gpt' %}">
-            {% csrf_token %}
-            <input type="hidden" name="generate_trello_cards" value="1">
-
-            <div class="form-actions">
-                <span class="form-note">Generating Trello cards will create cards based on the documents.</span>
-                <button type="submit">Generate Trello Cards</button>
-            </div>
-        </form>
+        {% if documents_saved %}
+            <form method="POST" action="{% url 'gpt' %}">
+                {% csrf_token %}
+                <input type="hidden" name="generate_trello_cards" value="1">
+    
+                <div class="form-actions">
+                    <span class="form-note">Generating Trello cards will create cards based on the documents.</span>
+                    <button type="submit">Generate Trello Cards</button>
+                </div>
+            </form>
+        {% endif %}
     </div>
     {% endif %}
 </div>
