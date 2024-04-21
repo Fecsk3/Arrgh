@@ -8,21 +8,24 @@ django.setup()
 from django.contrib.auth.models import User
 
 users_data = [
-    {'username': 'felhasznalo', 'first_name': 'Elek', 'last_name': 'Vicc', 'email': 'viccelek@example.com', 'password': 'jelszo'},
-    {'username': 'imi', 'first_name': 'Imre', 'last_name': 'Fütty', 'email': 'futtyimre@example.com', 'password': 'password'},
-    {'username': 'admin', 'first_name': 'Admin', 'last_name': 'Admin', 'email': 'admin@example.com', 'password': 'admin', 'is_superuser': True},
-    {'username': 'senior', 'first_name': 'Bélus', 'last_name': 'Ka', 'email': 'beluska@example.com', 'password': 'senior', 'is_superuser': True},
-    {'username': 'ize', 'first_name': 'Ize', 'last_name': 'Bize', 'email': 'izeke@example.com', 'password': 'ize'},
-    {'username': 'tunya', 'first_name': 'Tunya', 'last_name': 'Csap', 'email': 'Tunyacsap@example.com', 'password': 'tunya'},
+    {'username': 'birger', 'first_name': 'Gergő', 'last_name': 'Birinyi', 'email': 'birger@example.com', 'password': 'birger', 'is_superuser': True},
+    {'username': 'balint', 'first_name': 'Bálint', 'last_name': 'Katona', 'email': 'balint@example.com', 'password': 'balint', 'is_staff': True},
+    {'username': 'drntth', 'first_name': 'Dorina', 'last_name': 'Tóth', 'email': 'drntth@example.com', 'password': 'drntth'},
+    {'username': 'valesz', 'first_name': 'Valentin', 'last_name': 'Sipos', 'email': 'valesz@example.com', 'password': 'valesz'},
+    {'username': 'pali', 'first_name': 'Bálint', 'last_name': 'Kovácspál', 'email': 'pali@example.com', 'password': 'pali'},
 ]
 
 try:
     for data in users_data:
         is_superuser = data.pop('is_superuser', False)
+        is_staff = data.pop('is_staff', False)
         try:
             user = User.objects.create_user(**data)
             if is_superuser:
                 user.is_superuser = True
+                user.save()
+            if is_staff:
+                user.is_staff = True
                 user.save()
         except IntegrityError:
             print(f'Az adat már szerepel a táblában: {data["username"]}')
@@ -31,3 +34,4 @@ except Exception as e:
     print(f'Hiba történt az adatok feltöltésekor: {e}')
 else:
     print('Az adatok már feltöltve')
+

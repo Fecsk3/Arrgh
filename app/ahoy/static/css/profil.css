@@ -1,0 +1,450 @@
+#profilbox {
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  #profilbox h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  #profilbox p {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  #profilbox .button-container {
+    text-align: center;
+  }
+  
+  #profilbox .button-container button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  #profilbox .button-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  #profilbox form .button-container {
+    text-align: center;
+  }
+  
+  #profilbox form .button-container button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  #profilbox form .button-container button:hover {
+    background-color: #0056b3;
+  }
+
+  
+  #profilbox form {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  #profilbox form input[type="text"],
+  #profilbox form input[type="email"],
+  #profilbox form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  #profilbox form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  #profilbox form button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+
+.form-container {
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .form-container h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .form-container p {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .form-container .button-container {
+    text-align: center;
+  }
+  
+  .form-container .button-container button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .form-container .button-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  .form-container form {
+    max-width: 400px; 
+    margin: 0 auto; 
+  }
+  
+  .form-container form input[type="text"],
+  .form-container form input[type="email"],
+  .form-container form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  .form-container form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .form-container form button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+
+  .form-container .back-button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-container .back-button:hover {
+    background-color: #0056b3;
+}
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+/* A régi stílusok megtartása */
+
+.form-container {
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #333;
+}
+
+.form-container p {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.form-container .button-container {
+    text-align: center;
+}
+
+.form-container .button-container button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-container .button-container button:hover {
+    background-color: #0056b3;
+}
+
+.form-container form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.form-container form input[type="text"],
+.form-container form input[type="email"],
+.form-container form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-container form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-container form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+
+/* A régi stílusok megtartása */
+
+.form-container {
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #333;
+}
+
+.form-container p {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.form-container .button-container {
+    text-align: center;
+}
+
+.form-container .button-container button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-container .button-container button:hover {
+    background-color: #0056b3;
+}
+
+.form-container form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.form-container form input[type="text"],
+.form-container form input[type="email"],
+.form-container form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-container form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-container form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+
+ /* Az új stílusok a CustomPasswordChangeForm-hoz */
+
+.custom-password-change-form {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.custom-password-change-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.custom-password-change-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+/* A régi stílusok megtartása */
+
+#profilbox {
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+#profilbox h1 {
+    text-align: center;
+    color: #333;
+}
+
+#profilbox p {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+#profilbox .button-container {
+    text-align: center;
+}
+
+#profilbox .button-container button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#profilbox .button-container button:hover {
+    background-color: #0056b3;
+}
+
+#profilbox form .button-container {
+    text-align: center;
+}
+
+#profilbox form .button-container button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#profilbox form .button-container button:hover {
+    background-color: #0056b3;
+}
+
+#profilbox form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#profilbox form input[type="text"],
+#profilbox form input[type="email"],
+#profilbox form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#profilbox form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#profilbox form button[type="submit"]:hover {
+    background-color: #0056b3;
+}

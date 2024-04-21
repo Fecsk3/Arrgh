@@ -15,5 +15,13 @@
         {% endfor %}
     {% endif %}
 
+    {% if request.user.is_superuser %}
+        <p>Ezt a superuser látja csak</p>
+    {% elif request.user.is_staff %}
+        <p>Ezt a staff látja csak</p>
+    {% else %}
+        <p>Ezt csak a user látja</p>
+    {% endif %}
+
     <link rel="stylesheet" href="{% static 'css/index.css' %}" type="text/css"/>
 {% endblock %}
