@@ -6,6 +6,12 @@
 {% block content %}
 
 <div class="container">
+    <div class="progress-container">
+        <label for="document">Document Generation Progress:</label>
+        <progress id="document" max="100" value="{{ progress }}"></progress>
+        <span id="progress-text">{{ progress }}%</span>
+    </div>
+
     {% if not form_submitted %}
     <div class="form-container">
         <h1>Step 1: Enter Project Specifications</h1>
@@ -149,5 +155,15 @@
         </script>
     {% endfor %}
 {% endif %}
+
+<script>
+    function updateProgressBar(value) {
+        document.getElementById('file').value = value;
+        document.getElementById('file').innerText = value + '%';
+    }
+
+    updateProgressBar(parseInt("{{ progress }}"));
+</script>
+
 
 {% endblock %}

@@ -75,35 +75,3 @@ footer {
     width: 100%;
     font-size: 14px;
 }
-
-.spec-description {
-    border: 2px solid #ccc;
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-
-.gpt-container {
-    float: left;
-    width: 50%;
-    margin-left: 10px;
-    vertical-align: top;
-}
-
-.full-width-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.full-width-table td {
-    padding: 8px;
-}
-
-.full-width-table td:first-child {
-    width: 40%;
-    text-align: center;
-}
-
-

@@ -77,3 +77,53 @@ textarea {
     font-size: 14px;
     margin-left: 20px;
 }
+
+.progress-container {
+    max-width: 65%;
+    margin: 10px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #f8f8f8;
+    position: relative; 
+}
+
+.progress-container label {
+    display: block;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+#document {
+    width: 100%;
+    height: 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #ddd;
+}
+
+#document::-webkit-progress-bar {
+    background-color: #ddd;
+}
+
+#document::-webkit-progress-value {
+    background-color: #4caf50;
+    border-radius: 4px;
+}
+
+#document::-moz-progress-bar {
+    background-color: #4caf50;
+    border-radius: 4px;
+}
+
+#progress-text {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8em;
+    color: #333;
+    white-space: nowrap;
+}

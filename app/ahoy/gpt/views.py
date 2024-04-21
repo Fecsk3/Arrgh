@@ -15,9 +15,10 @@ logger = logging.getLogger(__name__)
 def gpt(request):
     form = ProjectForm()
     form_submitted = False
+    progress = 0
     
     def render_template_with_data(template_name, data):
-        data.update({'form': form, 'form_submitted': form_submitted})
+        data.update({'form': form, 'form_submitted': form_submitted, 'progress' : progress})
         return render(request, template_name, data)
 
     if request.method == 'POST':
@@ -40,6 +41,7 @@ def gpt(request):
 
                     project_description = markdown2.markdown(project_description)
                     form_submitted = True
+                    progress = 20
                     return render_template_with_data('gpt.html', {'project_description': project_description})
                 else:
                     messages.error(request, "Invalid form data. Please check your inputs.")
@@ -52,6 +54,7 @@ def gpt(request):
                         request.session['requirements_specification'] = requirements_specification
                         requirements_specification = markdown2.markdown(requirements_specification)
                         form_submitted = True
+                        progress = 40
                         return render_template_with_data('gpt.html', {'requirements_specification': requirements_specification})
                     except Exception as e:
                         messages.error(request, f"Error generating requirements specification: {e}")
@@ -68,6 +71,7 @@ def gpt(request):
                         request.session['functional_specification'] = functional_specification
                         functional_specification = markdown2.markdown(functional_specification)
                         form_submitted = True
+                        progress = 60
                         return render_template_with_data('gpt.html', {'functional_specification': functional_specification})
                     except Exception as e:
                         messages.error(request, f"Error generating functional specification: {e}")
@@ -84,6 +88,7 @@ def gpt(request):
                             request.session['system_plan'] = system_plan
                             system_plan = markdown2.markdown(system_plan)
                             form_submitted = True
+                            progress = 80
                             return render_template_with_data('gpt.html', {'system_plan': system_plan})
                     except Exception as e:
                         messages.error(request, f"Error generating system plan: {e}")
@@ -99,7 +104,7 @@ def gpt(request):
                         summary_lines = summary.split('\n')
 
                         form_submitted = True
-
+                        progress = 90
                         return render_template_with_data('gpt.html', {'summary': summary_lines})
 
                     except Exception as e:
@@ -117,6 +122,7 @@ def gpt(request):
                                     f"System Plan"
                     summary_lines = summary.split('\n')
                     form_submitted = True
+                    progress = 95
 
                     template_responses = []
                     template_responses.append(request.session['requirements_specification'])
@@ -141,6 +147,7 @@ def gpt(request):
             elif 'generate_trello_cards' in request.POST:
                 try:
                     successful_generation = generate_trello_cards(request.session)
+                    progress = 100
                     if successful_generation:
                         messages.success(request, "Trello cards generated successfully.")
                     else:
