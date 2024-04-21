@@ -16,6 +16,33 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+LOGS_DIR = BASE_DIR / 'logs'
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        # "file": {
+        #     "level": "DEBUG",
+        #     "class": "logging.FileHandler",
+        #     "filename": BASE_DIR / "logs" / "debug.log",
+        # },
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    # "loggers": {
+    #     "django": {
+    #         "handlers": ["file"],
+    #         "level": "DEBUG",
+    #         "propagate": True,
+    #     },
+    # },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+}
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -25,7 +52,7 @@ SECRET_KEY = 'django-insecure-y8e-q53e-1vf=0-g21+^rlckkf@+z@(-$lhdnb%kc6ot0hu87g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["arrgh.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -126,6 +153,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

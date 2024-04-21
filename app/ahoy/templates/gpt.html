@@ -5,24 +5,148 @@
 
 {% block content %}
 
-<div class="gpt-container">
-    <h2>Enter your input:</h2>
-    <form method="POST" action="{% url 'gpt' %}">
-        {% csrf_token %}
-        <textarea id="input" name="input" rows="4" cols="50"></textarea><br>
-        <input type="submit" value="Generate Response">
-    </form>
+<div class="container">
+    
+    {% if not form_submitted %}
+    <div class="form-container">
+        <h1>Step 1: Enter Project Specifications</h1>
+        <p>Please fill in the form below with your project details:</p>
+        <form method="POST" action="{% url 'gpt' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="project_specialization_form" value="1">
+            <div class="form-actions">
+                <span class="form-note">If there is a misunderstanding with GPT, go back a page and then click the generate button again.</span>
+                <button type="submit">Generate Project Description</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    {% if project_description %}
+    <div class="form-container">
+        <h1>Step 2: Project Description</h1>
+        <p>Based on your input, here is the project description:</p>
+        <form method="POST" action="{% url 'gpt' %}">
+            {% csrf_token %}
+            <input type="hidden" name="generate_requirements_specification_form" value="1">
+            
+            <div class="description-container">
+                <p>{{ project_description|safe }}</p>
+            </div>
+            
+            <div class="form-actions">
+                <span class="form-note">If there is a misunderstanding with GPT, go back a page and then click the generate button again.</span>
+                <button type="submit">Generate Requirements Specification</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    {% if requirements_specification %}
+    <div class="form-container">
+        <h1>Step 3: Generated Requirements Specification</h1>
+        <p>Based on the project description, here is the generated requirements specification:</p>
+        <form method="POST" action="{% url 'gpt' %}">
+            {% csrf_token %}
+            <input type="hidden" name="generate_functional_specification_form" value="1">
+            
+            <div class="description-container">
+                <p>{{ requirements_specification|safe }}</p>
+            </div>
+            
+            <div class="form-actions">
+                <span class="form-note">If there is a misunderstanding with GPT, go back a page and then click the generate button again.</span>
+                <button type="submit">Generate Functional Specification</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    {% if functional_specification %}
+    <div class="form-container">
+        <h1>Step 4: Generated Functional Specification</h1>
+        <p>Based on the project description, here is the generated functional specification:</p>
+        <form method="POST" action="{% url 'gpt' %}">
+            {% csrf_token %}
+            <input type="hidden" name="generate_system_plan_form" value="1">
+            
+            <div class="description-container">
+                <p>{{ functional_specification|safe }}</p>
+            </div>
+            
+            <div class="form-actions">
+                <span class="form-note">If there is a misunderstanding with GPT, go back a page and then click the generate button again.</span>
+                <button type="submit">Generate System Plan</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+    
+    {% if system_plan %}
+    <div class="form-container">
+        <h1>Step 5: Generated System Plan</h1>
+        <p>Based on the project description, here is the generated system plan:</p>
+        <form method="POST" action="{% url 'gpt' %}">
+            {% csrf_token %}
+            <input type="hidden" name="show_summary" value="1">
+            
+            <div class="description-container">
+                <p>{{ system_plan|safe }}</p>
+            </div>
+            
+            <div class="form-actions">
+                <span class="form-note">If there is a misunderstanding with GPT, go back a page and then click the generate button again.</span>
+                <button type="submit">Show Summary</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
 
-    {% if response %}
-        <div class="response-container">
-        <h3>Generated Response:</h3>
-        <p id="response" style="background-color: wheat; color: black;">{{ response }}</p>
-        </div>
-    {% elif error_message %}
-        <p class="error" style="background-color: red; color: white;">{{ error_message }}</p>
+    {% if summary %}
+    <div class="form-container">
+        <h1>Step 6: Summary</h1>
+        <form method="POST" action="{% url 'gpt' %}">
+            {% csrf_token %}
+            <input type="hidden" name="save_documents" value="1">
+            
+            <div class="description-container">
+                <ul>
+                    {% for line in summary %}
+                        <li>{{ line|safe }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="form-actions">
+                <span class="form-note">The above documents will be saved in the database and on the <a href="{% url 'documents' %}">Documents</a> page, you can download them after clicking the button.</span>
+                <button type="submit">Save Documents</button>
+            </div>
+        </form>
+        <hr>
+        <form method="POST" action="{% url 'gpt' %}">
+            {% csrf_token %}
+            <input type="hidden" name="generate_trello_cards" value="1">
+
+            <div class="form-actions">
+                <span class="form-note">Generating Trello cards will create cards based on the documents.</span>
+                <button type="submit">Generate Trello Cards</button>
+            </div>
+        </form>
+    </div>
     {% endif %}
 </div>
 
 <link rel="stylesheet" href="{% static 'css/gpt.css' %}" type="text/css" />
+
+{% if messages %}
+    {% for message in messages %}
+        <script>
+            window.onload = function() {
+                alert("{{ message }}");
+            };
+        </script>
+    {% endfor %}
+{% endif %}
 
 {% endblock %}
