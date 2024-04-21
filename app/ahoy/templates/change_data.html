@@ -1,5 +1,23 @@
-<form method="post" action="{% url 'change_data' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Adatok mentése</button>
-</form>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+<div id="profilbox">
+    <form method="post" action="{% url 'change_data' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="button-container">
+            <button type="submit">Adatok mentése</button>
+            <button><a href="{% url 'profil' %}">Vissza</a></button>
+        </div>
+        
+    </form>
+</div>
+
+
+
+<link rel="stylesheet" href="{% static 'css/profil.css' %}" type="text/css"/>
+
+{% endblock %}
