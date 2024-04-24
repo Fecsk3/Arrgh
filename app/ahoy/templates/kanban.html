@@ -7,18 +7,54 @@
 
 <div class="container">
     {% for board in boards %}
-        <h2>{{ board.title  }}</h2>
+    <h2>{{ board.title  }}</h2>
         <div class="board" ondrop="drop(event)" ondragover="allowDrop(event)">
             {% for column in board.columns.all %}
                 <div class="column" data-column-id="{{ column.id }}" ondrop="drop(event)" ondragover="allowDrop(event)">
                     <div class="coloumn-title"><h3>{{ column.title }}</h3></div>
+                    {% if forloop.first %}
+                    <div id="new-card">
+                        <div id="new-card-title">
+                            <h4>Add a new Task</h4>
+                        </div>
+                        <form method="POST" action="{% url 'create_card' column.id %}" id="create-card-form-{{ column.id }}" class="create-card-form" data-column-id="{{ column.id }}">
+                            {% csrf_token %}
+                            <input type="text" name="title" placeholder="Title" required>
+                            <textarea name="description" placeholder="Description" required></textarea>
+                            <button type="submit">Add Card</button>
+                        </form>
+                    </div>
+                    {% endif %}
                     {% for card in column.cards.all %}
                         <div class="cards">
                             <div class="card" draggable="true" ondragstart="drag(event)" id="card-{{ card.id }}">
                                 <div class="card-title">
                                     <h4>{{ card.title }}</h4>
                                 </div>
+                                
                                 <p>{{ card.description }}</p>
+                                <div id="edit-card-popup" class="popup">
+                                    <div class="popup-content">
+                                        <span class="close" onclick="closeEditCardPopup()">&times;</span>
+                                        <h2>Edit Card</h2>
+                                        <form id="edit-card-form" method="POST" action="{% url 'edit_card' card.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" id="edit-card-id" name="card_id">
+                                            <input type="text" id="edit-card-title" name="title" placeholder="Title" required>
+                                            <textarea id="edit-card-description" name="description" placeholder="Description" required></textarea>
+                                            <!-- <label for="color-picker">Choose a color for the title background:</label>
+                                            <input type="color" id="color-picker" onchange="changeBackgroundColor(this.value)"> -->
+                                            <button type="submit">Save</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="button-container">
+                                    <button class="edit-button" data-card-id="{{ card.id }}">Edit</button>
+                                    <form method="POST" action="{% url 'remove_card' card.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit">Delete</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}
@@ -28,7 +64,49 @@
     {% endfor %}
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var editButtons = document.querySelectorAll(".edit-button");
+        var editCardPopup = document.getElementById("edit-card-popup");
+        var editCardForm = document.getElementById("edit-card-form");
+        var editCardTitle = document.getElementById("edit-card-title");
+        var editCardDescription = document.getElementById("edit-card-description");
+        var editCardIdField = document.getElementById("edit-card-id");
+
+        editButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                var cardId = this.getAttribute("data-card-id");
+                var cardTitle = document.getElementById("card-" + cardId).querySelector(".card-title").innerText;
+                var cardDescription = document.getElementById("card-" + cardId).querySelector("p").innerText;
+
+                editCardIdField.value = cardId;
+                editCardTitle.value = cardTitle;
+                editCardDescription.value = cardDescription;
+
+                editCardForm.action = "/edit_card/" + cardId + "/";
+
+                editCardPopup.style.display = "block";
+            });
+        });
+    });
+
+    function closeEditCardPopup() {
+        var editCardPopup = document.getElementById("edit-card-popup");
+        editCardPopup.style.display = "none";
+    }
+</script>
+
 <link rel="stylesheet" href="{% static 'css/kanban.css' %}" type="text/css"/>
+
+{% if messages %}
+    {% for message in messages %}
+        <script>
+            window.onload = function() {
+                alert("{{ message }}");
+            };
+        </script>
+    {% endfor %}
+{% endif %}
 
 <script>
     function allowDrop(event) {
