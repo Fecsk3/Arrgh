@@ -211,7 +211,14 @@ def load_templates():
 def save_templates_responses(template_responses):
     saved_files = []
     media_root = Path(settings.MEDIA_ROOT)
+
+    if not media_root.exists():
+        media_root.mkdir(parents=True, exist_ok=True)
+
     output_dir = media_root / 'user_generated_docs'
+
+    if not output_dir.exists():
+        output_dir.mkdir(parents=True, exist_ok=True)
 
     template_filenames = [
         'requirements_specification_generated.md',
