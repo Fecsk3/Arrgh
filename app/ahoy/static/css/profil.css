@@ -448,3 +448,13 @@ a{
 #profilbox form button[type="submit"]:hover {
     background-color: #0056b3;
 }
+
+.custom-input {
+  width: 100%;
+  margin: 10px;
+}
+
+p {
+  font-weight: bold;
+  margin-left: 50px;
+}
