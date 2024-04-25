@@ -75,3 +75,11 @@ def edit_card(request, card_id):
     else:
         messages.error(request, 'Invalid request method.')
         return redirect('kanban')
+
+def get_card_color(request, card_id):
+    try:
+        card = Card.objects.get(id=card_id)
+        color = card.color
+        return JsonResponse({'color': color})
+    except Card.DoesNotExist:
+        return JsonResponse({'error': 'Card does not exist'}, status=404)

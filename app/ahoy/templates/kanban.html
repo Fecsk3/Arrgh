@@ -31,10 +31,10 @@
                                 <div class="card-title">
                                     <h4>{{ card.title }}</h4>
                                 </div>
-                                
+
                                 <p>{{ card.description }}</p>
-                                <div id="edit-card-popup" class="popup">
-                                    <div class="popup-content">
+                                <div id="edit-card-popup" class="popup" draggable="false">
+                                    <div class="popup-content" draggable="false">
                                         <span class="close" onclick="closeEditCardPopup()">&times;</span>
                                         <h2>Edit Card</h2>
                                         <form id="edit-card-form" method="POST" action="{% url 'edit_card' card.id %}">
@@ -42,8 +42,8 @@
                                             <input type="hidden" id="edit-card-id" name="card_id">
                                             <input type="text" id="edit-card-title" name="title" placeholder="Title" required>
                                             <textarea id="edit-card-description" name="description" placeholder="Description" required></textarea>
-                                            <!-- <label for="color-picker">Choose a color for the title background:</label>
-                                            <input type="color" id="color-picker" onchange="changeBackgroundColor(this.value)"> -->
+                                            <label for="color-picker">Choose a color for the title background:</label>
+                                            <input type="color" class="color-picker" name="color" value="{{ card.color }}">
                                             <button type="submit">Save</button>
                                         </form>
                                     </div>
@@ -66,6 +66,48 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+    var cards = document.querySelectorAll(".card");
+    cards.forEach(function(card) {
+        var cardId = card.id;
+        var cardNumber = extractCardNumber(cardId);
+        if (cardNumber) {
+            fetchCardColor(cardNumber);
+        }
+        });
+    });
+
+    function extractCardNumber(cardId) {
+        var matches = cardId.match(/\d+/);
+        return matches ? parseInt(matches[0]) : null;
+    }
+
+
+    function fetchCardColor(cardId) {
+        fetch(`/get_card_color/${cardId}/`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to fetch card color');
+                }
+            })
+            .then(data => {
+                var color = data.color;
+                applyCardColor(cardId, color);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function applyCardColor(cardId, color) {
+        var cardTitleElement = document.getElementById("card-" + cardId).querySelector(".card-title");
+        cardTitleElement.style.backgroundColor = color;
+    }
+</script>
+
+<script> 
+    document.addEventListener("DOMContentLoaded", function() {
         var editButtons = document.querySelectorAll(".edit-button");
         var editCardPopup = document.getElementById("edit-card-popup");
         var editCardForm = document.getElementById("edit-card-form");
@@ -73,11 +115,24 @@
         var editCardDescription = document.getElementById("edit-card-description");
         var editCardIdField = document.getElementById("edit-card-id");
 
+        var colorPickers = document.querySelectorAll(".color-picker");
+        colorPickers.forEach(function(colorPicker) {
+            colorPicker.addEventListener("change", function() {
+                var cardId = editCardIdField.value;
+                changeTitleBackgroundColor(this.value, cardId);
+            });
+        });
+
         editButtons.forEach(function(button) {
             button.addEventListener("click", function() {
                 var cardId = this.getAttribute("data-card-id");
                 var cardTitle = document.getElementById("card-" + cardId).querySelector(".card-title").innerText;
                 var cardDescription = document.getElementById("card-" + cardId).querySelector("p").innerText;
+
+                var cardElement = document.getElementById("card-" + cardId).querySelector(".card-title");
+                var cardStyles = window.getComputedStyle(cardElement);
+                var cardColor = cardStyles.backgroundColor;
+                var hexColor = rgbToHex(cardColor);
 
                 editCardIdField.value = cardId;
                 editCardTitle.value = cardTitle;
@@ -94,7 +149,20 @@
         var editCardPopup = document.getElementById("edit-card-popup");
         editCardPopup.style.display = "none";
     }
+
+    function rgbToHex(rgb) {
+        var rgbArray = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        return "#" + ("0" + parseInt(rgbArray[1], 10).toString(16)).slice(-2) +
+            ("0" + parseInt(rgbArray[2], 10).toString(16)).slice(-2) +
+            ("0" + parseInt(rgbArray[3], 10).toString(16)).slice(-2);
+    }
+
+    function changeTitleBackgroundColor(color, cardId) {
+        var cardTitleElement = document.getElementById("card-" + cardId).querySelector(".card-title");
+        cardTitleElement.style.backgroundColor = color;
+    }
 </script>
+
 
 <link rel="stylesheet" href="{% static 'css/kanban.css' %}" type="text/css"/>
 
