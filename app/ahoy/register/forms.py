@@ -12,11 +12,11 @@ class SignUpForm(UserCreationForm):
     )
     first_name = forms.CharField(
         label="",
-        widget=forms.TextInput(attrs={'placeholder': 'First name', 'class': 'form-control'})
+        widget=forms.TextInput(attrs={'placeholder': 'first_name', 'class': 'form-control'})
     )
     last_name = forms.CharField(
         label="",
-        widget=forms.TextInput(attrs={'placeholder': 'Last name', 'class': 'form-control'})
+        widget=forms.TextInput(attrs={'placeholder': 'last_name', 'class': 'form-control'})
     )
     email = forms.EmailField(
         label="",
