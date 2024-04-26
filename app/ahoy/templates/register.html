@@ -12,9 +12,19 @@
 <body>
     <main>
         <h2>Create an account</h2>
-        <form method="post">
+        <!--<form method="post">
             {% csrf_token %}
             {{ form.as_p }}
+            <button type="submit" class="btn">Sign Up</button>
+        </form>-->
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="username" required>
+            <input type="text" name="first_name" placeholder="first_name" required>
+            <input type="text" name="last_name" placeholder="last_name" required>
+            <input type="email" name="email" placeholder="email" required>
+            <input type="password" name="password1" placeholder="password" required>
+            <input type="password" name="password2" placeholder="password again" required>
             <button type="submit" class="btn">Sign Up</button>
         </form>
         <p id="jobbra">Already have an account? <a href="{% url 'login' %}" id="loginLink">Sign In!</a></p>
