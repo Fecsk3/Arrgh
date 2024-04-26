@@ -32,6 +32,7 @@ urlpatterns = [
     path('', include('kanban.urls')),
     path('', include('gpt.urls')),
     path('', include('profil.urls')),
+    path('', include('team.urls')),
     path('', RedirectView.as_view(url='/login/')),
     path('admin/', admin.site.urls),
 ]

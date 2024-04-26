@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'gpt',
     'profil',
     'documents',
+    'team',
 ]
 
 MIDDLEWARE = [

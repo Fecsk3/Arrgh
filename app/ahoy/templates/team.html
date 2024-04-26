@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Csapatok{% endblock %}
+
+{% block content %}
+<div class="team-container" style="padding: 20px;">
+  {% if request.user.is_superuser %}
+    <div class="team-card">
+      <div class="team-card-header">
+        <h2 class="team-card-title">Új csapat létrehozása</h2>
+      </div>
+      <div class="team-card-body">
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit">Mentés</button>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+
+  {% for team_info in team_details %}
+    <div class="team-card">
+      <div class="team-card-header">
+        <h2 class="team-card-title">{{ team_info.team }}. csapat</h2>
+      </div>
+      <div class="team-card-body">
+        <ul>
+          {% for member in team_info.members %}
+            <li>{{ member }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% if forloop.counter|divisibleby:3 and not forloop.last %}
+      </div><div class="team-container" style="padding: 20px;">
+    {% endif %}
+  {% endfor %}
+</div>
+
+<link rel="stylesheet" href="{% static 'css/team.css' %}" type="text/css"/>
+{% endblock %}

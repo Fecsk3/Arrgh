@@ -14,15 +14,10 @@
         <h2>Create an account</h2>
         <form method="post">
             {% csrf_token %}
-            <input type="text" name="username" placeholder="username">
-            <input type="text" name="first_name" placeholder="Firstname">
-            <input type="text" name="last_name" placeholder="Lastname">
-            <input type="email" name="email" placeholder="email@email.com">
-            <input type="password" name="password1" placeholder="password">
-            <input type="password" name="password2" placeholder="password again">
+            {{ form.as_p }}
             <button type="submit" class="btn">Sign Up</button>
         </form>
-        <p id="jobbra"> Already have an account? <a href="{% url 'login' %}" id="loginLink">Sign In!</a></p>
+        <p id="jobbra">Already have an account? <a href="{% url 'login' %}" id="loginLink">Sign In!</a></p>
     </main>
     <footer>
         <p>&copy; 2024 ☠ Ahoy ☠</p>

@@ -34,9 +34,11 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%; /* Teljes szélesség */
+    padding: 20px; /* Belengetés */
 }
 
-input[type="text"], input[type="password"], input[type="email"] {
+.forms.CharField{
     padding: 15px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
@@ -54,8 +56,9 @@ button.btn {
     background-color: #007bff;
     color: #fff;
     cursor: pointer;
-    width: 50%;
+    width: 100%; /* Teljes szélesség */
     font-family: Arial, sans-serif;
+    font-size: 16px;
 }
 
 button.btn:hover {
