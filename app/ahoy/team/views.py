@@ -16,7 +16,7 @@ def team(request):
                 team = Team.objects.create(senior_id=senior_id)
                 members = form.cleaned_data['members']
                 for member_id in members:
-                    TeamMember.objects.create(user_id=member_id.id, team=team)
+                    TeamMember.objects.create(user_id=member_id, team=team)
                 return redirect('team')
         else:
             form = TeamCreationForm()
@@ -43,9 +43,8 @@ def team(request):
         return render(request, 'team.html', context)
 
     else:
-        # Non-staff, non-superuser users will see their own teams and members
         team_ids = TeamMember.objects.filter(user=user).values_list('team_id', flat=True)
-        teams = Team.objects.filter(teams_id__in=team_ids)
+        teams = Team.objects.filter(id__in=team_ids)
 
         team_details = []
 
@@ -60,6 +59,10 @@ def team(request):
         }
 
         return render(request, 'team.html', context)
+
+
+
+
 
 """ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required

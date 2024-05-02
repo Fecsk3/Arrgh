@@ -1,14 +1,26 @@
 from django import forms
 from django.contrib.auth.models import User
-from index.models import TeamMember
+from multiselectfield import MultiSelectField
+from index.models import TeamMember, Team
 
 class TeamCreationForm(forms.Form):
-    senior = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True),
-                                    label='Senior')
-    members = forms.ModelMultipleChoiceField(queryset=User.objects.filter(is_staff=False, is_superuser=False)
-                                             .exclude(id__in=TeamMember.objects.values_list('user_id', flat=True)),
-                                             label='Csapattagok',
-                                             widget=forms.SelectMultiple(attrs={'size': 3}))
+    senior = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
+
+    members = forms.MultipleChoiceField(
+        choices=[],  # Üres lista, amelyet a későbbi adatokkal töltünk fel
+        label='Csapattagok',
+        widget=forms.SelectMultiple(attrs={'size': 3})
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(TeamCreationForm, self).__init__(*args, **kwargs)
+        
+        # Adatok betöltése a choices listába a felhasználókból, akik csapattagnak kijelölhetők
+        self.fields['members'].choices = [(user.id, user.username) for user in User.objects.filter(is_staff=False, is_superuser=False)
+                                          .exclude(id__in=TeamMember.objects.values_list('user_id', flat=True))]
+
+
+
 
 """ from django import forms
 from django.contrib.auth.models import User
