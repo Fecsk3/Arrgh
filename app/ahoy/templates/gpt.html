@@ -11,7 +11,7 @@
         <progress id="document" max="100" value="{{ progress }}"></progress>
         <span id="progress-text">{{ progress }}%</span>
     </div>
-
+    
     {% if not form_submitted %}
     <div class="form-container">
         <h1>Step 1: Enter Project Specifications</h1>
@@ -107,18 +107,24 @@
         </form>
     </div>
     {% endif %}
-
+    
     {% if summary %}
     <div class="form-container">
         <h1>Step 6: Summary</h1>
         <form method="POST" action="{% url 'gpt' %}">
             {% csrf_token %}
             <input type="hidden" name="save_documents" value="1">
+            <h3>Teams:</h3>
+            <select id="teams-dropdown" name="selected_team">
+                {% for team in senior_teams %}
+                <option value="{{ team.teams_id }}">{{ team }}</option>
+                {% endfor %}
+            </select>
             
             <div class="description-container">
                 <ul>
                     {% for line in summary %}
-                        <li>{{ line|safe }}</li>
+                    <li>{{ line|safe }}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -130,15 +136,15 @@
         </form>
         <hr>
         {% if documents_saved %}
-            <form method="POST" action="{% url 'gpt' %}">
-                {% csrf_token %}
-                <input type="hidden" name="generate_trello_cards" value="1">
-    
-                <div class="form-actions">
-                    <span class="form-note">Generating Trello cards will create cards based on the documents.</span>
-                    <button type="submit">Generate Trello Cards</button>
-                </div>
-            </form>
+        <form method="POST" action="{% url 'gpt' %}">
+            {% csrf_token %}
+            <input type="hidden" name="generate_trello_cards" value="1">
+            
+            <div class="form-actions">
+                <span class="form-note">Generating Trello cards will create cards based on the documents.</span>
+                <button type="submit">Generate Trello Cards</button>
+            </div>
+        </form>
         {% endif %}
     </div>
     {% endif %}
@@ -147,13 +153,13 @@
 <link rel="stylesheet" href="{% static 'css/gpt.css' %}" type="text/css" />
 
 {% if messages %}
-    {% for message in messages %}
-        <script>
-            window.onload = function() {
-                alert("{{ message }}");
-            };
-        </script>
-    {% endfor %}
+{% for message in messages %}
+<script>
+    window.onload = function() {
+        alert("{{ message }}");
+    };
+</script>
+{% endfor %}
 {% endif %}
 
 <script>
@@ -161,7 +167,7 @@
         document.getElementById('file').value = value;
         document.getElementById('file').innerText = value + '%';
     }
-
+    
     updateProgressBar(parseInt("{{ progress }}"));
 </script>
 

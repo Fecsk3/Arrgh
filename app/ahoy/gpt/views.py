@@ -8,6 +8,10 @@ from freeGPT.Client.gpt3 import Completion
 from django.contrib import messages
 import markdown2
 from django.utils.html import escape
+from kanban.models import Card, Column, Board
+from django.db.models import Max
+from index.models import Team
+from django.contrib.auth.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -66,8 +70,13 @@ def gpt(request):
                 if 'requirements_specification' in request.session:
                     try:
                         prompt = request.session['project_description'] + request.session['functional_specification_template']
+                        print(prompt)
+                        print("----------------------------------------------")
                         request.session.pop('requirements_specification_template', None)
                         functional_specification = generate_gpt_response(prompt)
+                        print(functional_specification)
+                        print("----------------------------------------------")
+                        print(request)
                         request.session['functional_specification'] = functional_specification
                         functional_specification = markdown2.markdown(functional_specification)
                         form_submitted = True
@@ -105,7 +114,11 @@ def gpt(request):
 
                         form_submitted = True
                         progress = 90
-                        return render_template_with_data('gpt.html', {'summary': summary_lines})
+
+                        senior_user = User.objects.get(id=request.user.id) 
+                        senior_teams = Team.objects.filter(senior=senior_user)
+
+                        return render_template_with_data('gpt.html', {'summary': summary_lines, 'senior_teams': senior_teams})
 
                     except Exception as e:
                         messages.error(request, f"Error showing summary: {e}")
@@ -128,6 +141,12 @@ def gpt(request):
                     template_responses.append(request.session['requirements_specification'])
                     template_responses.append(request.session['functional_specification'])
                     template_responses.append(request.session['system_plan'])
+
+                    selected_team_id = request.POST.get('selected_team')
+                    request.session['selected_team_id'] = selected_team_id
+
+                    #TODO: a dokumentumokat az adott team-hez mentse
+
                     successful_saving = save_templates_responses(template_responses)
                     if successful_saving:
                         messages.success(request, "Generated documents successfully saved.")
@@ -159,6 +178,7 @@ def gpt(request):
                     request.session.pop('requirements_specification', None)
                     request.session.pop('functional_specification', None)
                     request.session.pop('system_plan', None)
+                    request.session.pop('selected_team_id', None)
         
         except Exception as e:
             error_message = f"An unexpected error occurred: {e}"
@@ -220,6 +240,8 @@ def save_templates_responses(template_responses):
     if not output_dir.exists():
         output_dir.mkdir(parents=True, exist_ok=True)
 
+    #TODO: a dokumentumokat az adott team-hez mentse
+
     template_filenames = [
         'requirements_specification_generated.md',
         'functional_specification_generated.md',
@@ -250,17 +272,65 @@ def save_templates_responses(template_responses):
     
 def generate_trello_cards(session_data):
     try:
-        form_data = session_data.get('form_data', '')
-        title = form_data.get('title', '')
-
-        requirements_specification = session_data.get('requirements_specification', '')
-        functional_specification = session_data.get('functional_specification', '')
-        system_plan = session_data.get('system_plan', '')
-
-        #TODO: making trello cards in database
-        
-        return True
+        return generate_card_from_functional_specs(session_data)
     
     except Exception as e:
         print(f"Error generating Trello cards: {e}")
+        return False   
+
+def create_board_and_coloumns(session_data, team_id):
+    try:
+        form_data = session_data.get('form_data', '')
+        project_title = form_data.get('title', '')
+
+        new_board = Board.objects.create(
+            title=project_title,
+            created_by=team_id,
+        )
+
+        column_titles = ['To Do', 'In Progress', 'Review', 'Testing', 'Done']
+        for index, column_title in enumerate(column_titles):
+            new_column = Column.objects.create(
+                title=column_title,
+                board=new_board,
+                order=index
+            )
+
+        return True, new_board
+
+    except Exception as e:
+        print(f"Error creating board with columns: {e}")
+        return False, None
+
+def generate_card_from_functional_specs(session_data):
+    try:
+        team_id = session_data['selected_team_id']
+        functional_specification = session_data.get('functional_specification', '')
+        prompt = "Make Trello Cards (title, description) from this document:\n" + functional_specification + "\n structured as title and description separated by a newline"
+        response = generate_gpt_response(prompt)
+
+        success, board = create_board_and_coloumns(session_data, team_id)
+        if not success:
+            return False
+
+        first_column = board.columns.first()
+
+        card_data_list = response.split('\n\n') 
+
+        max_order = first_column.cards.aggregate(Max('order'))['order__max'] or 0
+
+        for card_data in card_data_list:
+            title, description = card_data.split('\n', 1)
+
+            new_card = Card.objects.create(
+                title=title.strip(),
+                description=description.strip(),
+                column=first_column,
+                order = max_order + 1,
+            )
+
+        return True
+
+    except Exception as e:
+        print(f"Error generating Trello card from functional specs: {e}")
         return False
