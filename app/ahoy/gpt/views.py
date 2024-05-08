@@ -8,10 +8,9 @@ from freeGPT.Client.gpt3 import Completion
 from django.contrib import messages
 import markdown2
 from django.utils.html import escape
-from kanban.models import Card, Column, Board
-from django.db.models import Max
 from index.models import Team
 from django.contrib.auth.models import User
+from index.models import Team, TeamMember
 
 logger = logging.getLogger(__name__)
 
@@ -140,7 +139,7 @@ def gpt(request):
                     selected_team_id = request.POST.get('selected_team')
                     request.session['selected_team_id'] = selected_team_id
 
-                    successful_saving = save_templates_responses(template_responses, selected_team_id, request.session)
+                    successful_saving = save_templates_responses(template_responses, request.session)
                     if successful_saving:
                         messages.success(request, "Generated documents successfully saved.")
                         form_submitted = False
@@ -211,7 +210,7 @@ def load_templates():
             templates_content.append(template_content)
     return templates_content
 
-def save_templates_responses(template_responses, team_id, session_data):
+def save_templates_responses(template_responses, session_data):
     saved_files = []
     media_root = Path(settings.MEDIA_ROOT)
 
@@ -226,7 +225,7 @@ def save_templates_responses(template_responses, team_id, session_data):
     form_data = session_data.get('form_data', '')
     project_title = form_data.get('title', '')
     
-    project_dir = output_dir / f"{project_title}_team{team_id}"
+    project_dir = output_dir / f"{project_title}_team{session_data['selected_team_id']}"
     if not project_dir.exists():
         project_dir.mkdir(parents=True, exist_ok=True)
 
@@ -246,6 +245,12 @@ def save_templates_responses(template_responses, team_id, session_data):
             with open(file_path, 'w') as file:
                 file.write(response)
             saved_files.append(file_path)
+
+        team = Team.objects.get(teams_id=session_data['selected_team_id'])
+        team.directory = str(project_dir)
+        team.project_title = project_title
+        team.save()
+
         return True 
     
     except FileNotFoundError as e:

@@ -2,10 +2,57 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from .models import Board, Column, Card
 from django.contrib import messages
+from freeGPT.Client.gpt3 import Completion
+from django.db.models import Max
+from index.models import Team, TeamMember
+from pathlib import Path
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
+@login_required()
 def kanban(request):
-    boards = Board.objects.prefetch_related('columns__cards').all()
-    return render(request, 'kanban.html', {'boards': boards})
+    user_id = User.objects.get(id=request.user.id) 
+    is_senior = Team.objects.filter(senior=user_id).exists()
+
+    if is_senior and request.method == 'POST' and 'generate_board' in request.POST:
+        selected_team_id = int(request.POST.get('selected_team'))
+        
+        if Board.objects.filter(created_by_id=selected_team_id).exists():
+            messages.info(request, 'This team already has a board.')
+            return redirect('kanban') 
+        else:
+            success, board = create_board_and_coloumns(selected_team_id)
+            print(success)
+            if success:
+                messages.info(request, 'The board created successfully.')
+                return render(request, 'kanban.html', {'boards': board})
+            else:
+                messages.error(request, 'An error occurred while creating the board.')
+            return redirect('kanban')
+    
+    if is_senior:
+        senior_id = user_id
+        senior_teams = Team.objects.filter(senior=senior_id)
+        return render(request, 'kanban.html', {'senior_teams': senior_teams, 'is_senior': is_senior})
+
+        # docs = load_team_docs(team_id)
+        # request.session['requirements_specification'] = docs[0]
+        # request.session['functional_specification'] = docs[1]
+        # request.session['system_plan'] = docs[2]
+    # boards = Board.objects.prefetch_related('columns__cards').all()
+    # return render(request, 'kanban.html', {'boards': boards, 'senior_teams': senior_teams, 'is_senior': is_senior})
+
+def get_user_team_id(user_id):
+    try:
+        team_member = TeamMember.objects.get(user_id=user_id)
+        return team_member.team_id
+    except TeamMember.DoesNotExist:
+        try:
+            team = Team.objects.get(senior_id=user_id)
+            return team.teams_id
+        except Team.DoesNotExist:
+            return None
 
 def create_card(request, column_id):
     if request.method == 'POST':
@@ -83,25 +130,57 @@ def get_card_color(request, card_id):
         return JsonResponse({'color': color})
     except Card.DoesNotExist:
         return JsonResponse({'error': 'Card does not exist'}, status=404)
-    
+
+
+def load_team_docs(team_id):
+    team = Team.objects.get(teams_id=team_id)
+    directory = team.directory
+
+    if directory:
+        docs_dir = Path(settings.BASE_DIR) / 'media' / 'user_generated_docs' / directory
+
+        docs_filenames = [
+            'requirements_specification_generated.md',
+            'functional_specification_generated.md',
+            'system_plan_generated.md'
+        ]
+
+        docs_files = [docs_dir / filename for filename in docs_filenames]
+
+        docs_content = []
+        for docs_file in docs_files:
+            with open(docs_file, 'r') as f:
+                doc_content = f.read()
+                docs_content.append(doc_content)
+        return docs_content
+    else:
+        messages.error("Create documentation for project first")
+
+def generate_gpt_response(prompt):
+    completion_generator = Completion()
+    response = completion_generator.create(prompt)
+    return response
 
 def generate_trello_cards(session_data):
     try:
-        return generate_card_from_functional_specs(session_data)
+        return generate_card_from_choosed_specs(session_data)
     
     except Exception as e:
         print(f"Error generating Trello cards: {e}")
         return False
     
-def create_board_and_coloumns(session_data, team_id):
+def create_board_and_coloumns(team_id):
     try:
-        form_data = session_data.get('form_data', '')
-        project_title = form_data.get('title', '')
+        team = Team.objects.get(teams_id=team_id)
+        project_title = team.project_title
 
-        new_board = Board.objects.create(
-            title=project_title,
-            created_by=team_id,
-        )
+        if project_title:
+            new_board = Board.objects.create(
+                title=project_title,
+                created_by=team,
+            )
+        else:
+            messages.error("Create documentation for project first")
 
         column_titles = ['To Do', 'In Progress', 'Review', 'Testing', 'Done']
         for index, column_title in enumerate(column_titles):
@@ -117,7 +196,7 @@ def create_board_and_coloumns(session_data, team_id):
         print(f"Error creating board with columns: {e}")
         return False, None
     
-def generate_card_from_functional_specs(session_data):
+def generate_card_from_choosed_specs(session_data):
     try:
         team_id = session_data['selected_team_id']
         functional_specification = session_data.get('functional_specification', '')

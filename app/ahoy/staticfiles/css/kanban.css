@@ -78,13 +78,11 @@
     color: #fff;
     font-weight: bold;
     margin-bottom: 10px;
-    /* background-color: #14BDEB; */
 }
 .card-title h4 {
     font-size: 1.3em;
     margin: 0;
 }
-
 
 #new-card {
     flex: 1;
@@ -276,3 +274,33 @@
     box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.5);
 }
 
+.create_board {
+    padding: 50px;
+    text-align: center;
+    background-color: #fff;
+    border: none; 
+    border-radius: 15px; 
+    width: fit-content;
+    margin: auto;
+}
+
+.board-form-group {
+    margin-bottom: 20px;
+}
+
+#teams-dropdown {
+    width: 200px;
+}
+
+.create_board button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+}
+
+.create_board button[type="submit"]:hover {
+    background-color: #0056b3; 
+}
