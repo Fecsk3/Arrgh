@@ -83,3 +83,69 @@ def get_card_color(request, card_id):
         return JsonResponse({'color': color})
     except Card.DoesNotExist:
         return JsonResponse({'error': 'Card does not exist'}, status=404)
+    
+
+def generate_trello_cards(session_data):
+    try:
+        return generate_card_from_functional_specs(session_data)
+    
+    except Exception as e:
+        print(f"Error generating Trello cards: {e}")
+        return False
+    
+def create_board_and_coloumns(session_data, team_id):
+    try:
+        form_data = session_data.get('form_data', '')
+        project_title = form_data.get('title', '')
+
+        new_board = Board.objects.create(
+            title=project_title,
+            created_by=team_id,
+        )
+
+        column_titles = ['To Do', 'In Progress', 'Review', 'Testing', 'Done']
+        for index, column_title in enumerate(column_titles):
+            new_column = Column.objects.create(
+                title=column_title,
+                board=new_board,
+                order=index
+            )
+
+        return True, new_board
+
+    except Exception as e:
+        print(f"Error creating board with columns: {e}")
+        return False, None
+    
+def generate_card_from_functional_specs(session_data):
+    try:
+        team_id = session_data['selected_team_id']
+        functional_specification = session_data.get('functional_specification', '')
+        prompt = "Make Trello Cards (title, description) from this document:\n" + functional_specification + "\n structured as title and description separated by a newline"
+        response = generate_gpt_response(prompt)
+
+        success, board = create_board_and_coloumns(session_data, team_id)
+        if not success:
+            return False
+
+        first_column = board.columns.first()
+
+        card_data_list = response.split('\n\n') 
+
+        max_order = first_column.cards.aggregate(Max('order'))['order__max'] or 0
+
+        for card_data in card_data_list:
+            title, description = card_data.split('\n', 1)
+
+            new_card = Card.objects.create(
+                title=title.strip(),
+                description=description.strip(),
+                column=first_column,
+                order = max_order + 1,
+            )
+
+        return True
+
+    except Exception as e:
+        print(f"Error generating Trello card from functional specs: {e}")
+        return False

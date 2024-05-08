@@ -1,0 +1,34 @@
+/* index.css */
+
+/* Stílus a táblázat fejlécéhez (thead) */
+table {
+    border-collapse: collapse; /* Cellák összevonása egyetlen keret köré */
+    width: 100%; /* Teljes szélességű táblázat */
+    max-width: 800px; /* Maximális szélesség beállítása */
+    margin: 0 auto; /* Táblázat középre igazítása */
+}
+
+table, th, td {
+    border: 1px solid black; /* Vonalak a cellák körül */
+    padding: 8px; /* Belső tér a cellákban */
+    text-align: center; /* Szöveg középre igazítása a cellákban */
+}
+
+/* Stílus a táblázat fejlécéhez (thead) */
+thead {
+    background-color: #f2f2f2; /* Háttérszín a fejléc soraihoz */
+}
+
+/* Stílus a táblázat tartalmához (tbody) */
+tbody {
+    background-color: #ffffff; /* Háttérszín a táblázat tartalmához */
+}
+
+/* Stílus a táblázat soraihoz (tr) */
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Páros sorok háttérszíne */
+}
+
+tr:hover {
+    background-color: #ddd; /* Egérrel föléhúzott sorok háttérszíne */
+}

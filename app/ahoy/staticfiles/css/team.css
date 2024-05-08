@@ -1,0 +1,62 @@
+/* team.css */
+
+/* Team kártyák konténere */
+.team-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* Team kártya stílusok */
+.team-card {
+    flex: 0 0 calc(33.33% - 20px); /* Maximum 3 kártya egy sorban, margókkal */
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column; /* Oszlop irányba rendezés */
+}
+
+/* Kártya hover effekt */
+.team-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Team kártya fejléce */
+.team-card-header {
+    background-color: #333333;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 10px 10px 0 0; /* Kerekítés csak felfelé */
+    width: 100%; /* Teljes szélesség */
+    box-sizing: border-box; /* A padding számítása a szélességhez */
+}
+
+/* Team kártya címe */
+.team-card-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Team kártya tartalma (tagok listája) */
+.team-card-body {
+    flex: 1; /* A tartalom elfoglalja a rendelkezésre álló teret */
+    background-color: #ffffff;
+    color: #000000;
+    padding: 20px;
+    border-radius: 0 0 10px 10px; /* Kerekítés csak lefelé */
+    margin-top: 0; /* Belső margin felső része */
+}
+
+/* Team tagok listája */
+.team-card ul {
+    padding-left: 20px;
+}
+
+/* Team tag neve */
+.team-card li {
+    list-style: disc;
+    margin-bottom: 8px;
+}

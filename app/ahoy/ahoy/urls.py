@@ -20,6 +20,14 @@ from django.views.generic import RedirectView
 from django.views.static import serve
 from django.conf import settings
 from documents.views import documents_markdown_files_list, download_markdown_file
+from django.conf.urls import handler404
+from django.shortcuts import render
+
+
+def custom_404(request, exception):
+    return render(request, '404.html', {}, status=404)
+
+handler404 = custom_404
 
 
 urlpatterns = [

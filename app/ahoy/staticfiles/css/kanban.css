@@ -1,0 +1,278 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid black;
+    border-spacing: 10px;
+    width: 95%;
+    margin: auto; 
+    overflow-x: auto; 
+    overflow-y: auto; 
+    justify-content: center; 
+    align-items: center; 
+    background-color: #000;
+    border-radius: 50px;
+    margin-bottom: 10vh;
+    margin-top: 2.5vh;
+}
+.container h2 {
+    font-weight: bold;
+    font-size: 2em;
+    color: #fff;
+}
+
+
+.board {
+    display: flex; 
+    gap: 10px;
+    border: 1px solid black;
+    width: 100%;
+    padding: 20px;
+    margin: 0;
+    background-color: #fff;
+    overflow-x: auto; 
+    overflow-y: auto; 
+}
+
+.column {
+    flex: 1;
+    vertical-align: top;
+    padding: 10px;
+}
+
+.coloumn-title {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border: 5px ridge white;
+    border-radius: 15px;
+    background-color: #0E4194;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.coloumn-title h3 {
+    font-size: 1.5em;
+    margin: 10px;
+}
+
+.card {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    border-color: #14BDEB;
+    border-style: ridge;
+    border-width: 5px; 
+    border-radius: 15px;
+    cursor: grab;
+    margin-bottom: 10px;
+}
+
+.card-title {
+    text-align: center;
+    padding: 10px;
+    border-color: black;
+    border-style: ridge;
+    border-width: 3px; 
+    border-radius: 15px;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 10px;
+    /* background-color: #14BDEB; */
+}
+.card-title h4 {
+    font-size: 1.3em;
+    margin: 0;
+}
+
+
+#new-card {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    border-color: #8CBA80;
+    border-style: ridge;
+    border-width: 5px; 
+    border-radius: 15px;
+    cursor: grab;
+    margin-bottom: 10px;
+}
+
+#new-card-title {
+    text-align: center;
+    padding: 10px;
+    border-color: black;
+    border-style: ridge;
+    border-width: 3px; 
+    border-radius: 15px;
+    background-color: #8CBA80;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+#new-card-title h4 {
+    font-size: 1.3em;
+    margin: 0;
+}
+.create-card-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+.create-card-form  input[type="text"],
+.create-card-form  textarea {
+    margin-bottom: 5px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.create-card-form  textarea {
+    resize: vertical;
+}
+
+.create-card-form  button {
+    padding: 8px 15px;
+    background-color: #8CBA80;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+.create-card-form button:hover {
+    background-color: #60A47E;
+}
+.create-card-form button:focus {
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(141, 187, 129, 0.5);
+}
+
+.dragging {
+    opacity: 0.5;
+}
+
+.popup {
+    display: none; 
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    z-index: 999; 
+    overflow: auto;
+}
+
+.popup-content {
+    background-color: rgba(0, 140, 186, 0.95); 
+    margin: 20% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    max-width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+#edit-card-form {
+    margin-top: 20px; 
+    width: 100%; 
+    display: flex; 
+    flex-direction: row; 
+    flex-wrap: wrap; 
+    justify-content: space-between;
+}
+
+#edit-card-title {
+    width: 100%; 
+    margin-bottom: 10px; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+    box-sizing: border-box; 
+}
+#edit-card-description {
+    width: 100%; 
+    height: fit-content;
+    min-height: 200px;
+    margin-bottom: 10px; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+    box-sizing: border-box; 
+}
+.popup-content button[type="submit"] {
+    background-color: #4caf50; 
+    color: white; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    width: 60%; 
+    margin: auto;
+}
+
+.popup-content button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.popup-content h2 {
+    margin-top: 0; 
+}
+
+
+.button-container {
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+}
+.button-container .edit-button {
+    padding: 8px 15px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+.button-container .edit-button:hover {
+    background-color: #089fd1;
+}
+.create-card-form button:focus {
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(0, 140, 186, 0.5);
+}
+.button-container form button[type="submit"] {
+    padding: 8px 15px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+.button-container form button[type="submit"]:hover {
+    background-color: #c22419;
+}
+.button-container form button[type="submit"]:focus {
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.5);
+}
+

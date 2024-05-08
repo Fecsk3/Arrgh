@@ -70,13 +70,8 @@ def gpt(request):
                 if 'requirements_specification' in request.session:
                     try:
                         prompt = request.session['project_description'] + request.session['functional_specification_template']
-                        print(prompt)
-                        print("----------------------------------------------")
                         request.session.pop('requirements_specification_template', None)
                         functional_specification = generate_gpt_response(prompt)
-                        print(functional_specification)
-                        print("----------------------------------------------")
-                        print(request)
                         request.session['functional_specification'] = functional_specification
                         functional_specification = markdown2.markdown(functional_specification)
                         form_submitted = True
@@ -145,11 +140,11 @@ def gpt(request):
                     selected_team_id = request.POST.get('selected_team')
                     request.session['selected_team_id'] = selected_team_id
 
-                    #TODO: a dokumentumokat az adott team-hez mentse
-
-                    successful_saving = save_templates_responses(template_responses)
+                    successful_saving = save_templates_responses(template_responses, selected_team_id, request.session)
                     if successful_saving:
                         messages.success(request, "Generated documents successfully saved.")
+                        form_submitted = False
+                        progress = 100
                         return render_template_with_data('gpt.html', {'summary': summary_lines, 'documents_saved': successful_saving})
                     else:
                         messages.error(request, "Error saving generated documents.")
@@ -162,18 +157,6 @@ def gpt(request):
                     messages.error(request, f"Error: {e}")
                 finally:
                     request.session.pop('project_description', None)
-                    
-            elif 'generate_trello_cards' in request.POST:
-                try:
-                    successful_generation = generate_trello_cards(request.session)
-                    progress = 100
-                    if successful_generation:
-                        messages.success(request, "Trello cards generated successfully.")
-                    else:
-                        messages.error(request, "Error generating Trello cards.")
-                except Exception as e:
-                    messages.error(request, f"Error generating Trello cards: {e}")
-                finally:
                     request.session.pop('form_data', None)
                     request.session.pop('requirements_specification', None)
                     request.session.pop('functional_specification', None)
@@ -228,7 +211,7 @@ def load_templates():
             templates_content.append(template_content)
     return templates_content
 
-def save_templates_responses(template_responses):
+def save_templates_responses(template_responses, team_id, session_data):
     saved_files = []
     media_root = Path(settings.MEDIA_ROOT)
 
@@ -240,7 +223,12 @@ def save_templates_responses(template_responses):
     if not output_dir.exists():
         output_dir.mkdir(parents=True, exist_ok=True)
 
-    #TODO: a dokumentumokat az adott team-hez mentse
+    form_data = session_data.get('form_data', '')
+    project_title = form_data.get('title', '')
+    
+    project_dir = output_dir / f"{project_title}_team{team_id}"
+    if not project_dir.exists():
+        project_dir.mkdir(parents=True, exist_ok=True)
 
     template_filenames = [
         'requirements_specification_generated.md',
@@ -250,7 +238,7 @@ def save_templates_responses(template_responses):
 
     try:
         for filename, response in zip(template_filenames, template_responses):
-            file_path = output_dir / filename
+            file_path = project_dir / filename
             
             if file_path.exists():
                 logger.warning(f"File {filename} already exists. Overwriting.")
@@ -268,69 +256,4 @@ def save_templates_responses(template_responses):
         return False
     except Exception as e:
         logger.error(f"Unexpected error occurred while saving files: {e}")
-        return False
-    
-def generate_trello_cards(session_data):
-    try:
-        return generate_card_from_functional_specs(session_data)
-    
-    except Exception as e:
-        print(f"Error generating Trello cards: {e}")
-        return False   
-
-def create_board_and_coloumns(session_data, team_id):
-    try:
-        form_data = session_data.get('form_data', '')
-        project_title = form_data.get('title', '')
-
-        new_board = Board.objects.create(
-            title=project_title,
-            created_by=team_id,
-        )
-
-        column_titles = ['To Do', 'In Progress', 'Review', 'Testing', 'Done']
-        for index, column_title in enumerate(column_titles):
-            new_column = Column.objects.create(
-                title=column_title,
-                board=new_board,
-                order=index
-            )
-
-        return True, new_board
-
-    except Exception as e:
-        print(f"Error creating board with columns: {e}")
-        return False, None
-
-def generate_card_from_functional_specs(session_data):
-    try:
-        team_id = session_data['selected_team_id']
-        functional_specification = session_data.get('functional_specification', '')
-        prompt = "Make Trello Cards (title, description) from this document:\n" + functional_specification + "\n structured as title and description separated by a newline"
-        response = generate_gpt_response(prompt)
-
-        success, board = create_board_and_coloumns(session_data, team_id)
-        if not success:
-            return False
-
-        first_column = board.columns.first()
-
-        card_data_list = response.split('\n\n') 
-
-        max_order = first_column.cards.aggregate(Max('order'))['order__max'] or 0
-
-        for card_data in card_data_list:
-            title, description = card_data.split('\n', 1)
-
-            new_card = Card.objects.create(
-                title=title.strip(),
-                description=description.strip(),
-                column=first_column,
-                order = max_order + 1,
-            )
-
-        return True
-
-    except Exception as e:
-        print(f"Error generating Trello card from functional specs: {e}")
         return False

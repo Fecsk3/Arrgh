@@ -37,6 +37,7 @@ def get_superuser_table_data(request):
     print(data)  # Kiírjuk a data változó tartalmát a terminálra
 
     return JsonResponse({'data': data})
+    
 
 
 

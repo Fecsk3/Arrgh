@@ -44,7 +44,7 @@ def team(request):
 
     else:
         team_ids = TeamMember.objects.filter(user=user).values_list('team_id', flat=True)
-        teams = Team.objects.filter(id__in=team_ids)
+        teams = Team.objects.filter(teams_id__in=team_ids)
 
         team_details = []
 
