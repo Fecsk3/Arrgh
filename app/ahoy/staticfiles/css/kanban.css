@@ -304,3 +304,10 @@
 .create_board button[type="submit"]:hover {
     background-color: #0056b3; 
 }
+
+.empty-cards {
+    all: unset;
+}
+.empty-card {
+    all: unset;
+}

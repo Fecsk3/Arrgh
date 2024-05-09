@@ -247,7 +247,7 @@ def save_templates_responses(template_responses, session_data):
             saved_files.append(file_path)
 
         team = Team.objects.get(teams_id=session_data['selected_team_id'])
-        team.directory = str(project_dir)
+        team.directory = f"{project_title}_team{session_data['selected_team_id']}"
         team.project_title = project_title
         team.save()
 

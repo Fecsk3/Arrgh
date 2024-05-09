@@ -5,7 +5,7 @@
 
 {% block content %}
 
-{% if is_senior %}
+{% if is_senior and not boards %}
 <div class="create_board">
     <form action="{% url 'kanban' %}" method="post">
         {% csrf_token %}
@@ -73,6 +73,10 @@
                         </form>
                     </div>
                 </div>
+            </div>
+            {% empty %}
+            <div class="cards empty-cards" style="height: 0px;">
+                <div class="card empty-card" style="height: 0px;"></div>
             </div>
             {% endfor %}
         </div>
@@ -184,13 +188,13 @@
 <link rel="stylesheet" href="{% static 'css/kanban.css' %}" type="text/css"/>
 
 {% if messages %}
-{% for message in messages %}
-<script>
-    window.onload = function() {
-        alert("{{ message }}");
-    };
-</script>
-{% endfor %}
+    {% for message in messages %}
+        <script>
+            window.onload = function() {
+                alert("{{ message }}");
+            };
+        </script>
+    {% endfor %}
 {% endif %}
 
 <script>

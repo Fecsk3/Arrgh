@@ -14,27 +14,32 @@ from django.contrib.auth.decorators import login_required
 def kanban(request):
     user_id = User.objects.get(id=request.user.id) 
     is_senior = Team.objects.filter(senior=user_id).exists()
+    senior_teams = None
+    boards = None
 
-    if is_senior and request.method == 'POST' and 'generate_board' in request.POST:
-        selected_team_id = int(request.POST.get('selected_team'))
-        
-        if Board.objects.filter(created_by_id=selected_team_id).exists():
-            messages.info(request, 'This team already has a board.')
-            return redirect('kanban') 
-        else:
-            success, board = create_board_and_coloumns(selected_team_id)
-            print(success)
-            if success:
-                messages.info(request, 'The board created successfully.')
-                return render(request, 'kanban.html', {'boards': board})
-            else:
-                messages.error(request, 'An error occurred while creating the board.')
-            return redirect('kanban')
-    
     if is_senior:
-        senior_id = user_id
-        senior_teams = Team.objects.filter(senior=senior_id)
-        return render(request, 'kanban.html', {'senior_teams': senior_teams, 'is_senior': is_senior})
+        senior_teams = Team.objects.filter(senior=user_id)
+        selected_team_id = None
+
+        if request.method == 'POST' and 'generate_board' in request.POST:
+            selected_team_id = int(request.POST.get('selected_team'))
+
+            if Board.objects.filter(created_by_id=selected_team_id).exists():
+                messages.info(request, 'This team already has a board.')
+            else:
+                success, new_board = create_board_and_columns(selected_team_id)
+                if success:
+                    messages.success(request, 'The board was created successfully.')
+                else:
+                    messages.error(request, 'An error occurred while creating the board.')  
+
+            if selected_team_id:
+                boards = Board.objects.filter(created_by_id=selected_team_id)
+
+        if not boards:
+            boards = Board.objects.filter(created_by__in=senior_teams)
+        
+        return render(request, 'kanban.html', {'senior_teams': senior_teams, 'is_senior': is_senior, 'boards': boards})
 
         # docs = load_team_docs(team_id)
         # request.session['requirements_specification'] = docs[0]
@@ -169,10 +174,12 @@ def generate_trello_cards(session_data):
         print(f"Error generating Trello cards: {e}")
         return False
     
-def create_board_and_coloumns(team_id):
+def create_board_and_columns(team_id):
     try:
         team = Team.objects.get(teams_id=team_id)
         project_title = team.project_title
+
+        new_board = None
 
         if project_title:
             new_board = Board.objects.create(
@@ -180,17 +187,27 @@ def create_board_and_coloumns(team_id):
                 created_by=team,
             )
         else:
-            messages.error("Create documentation for project first")
+            print("Create documentation for project first")
+            return False, None
 
-        column_titles = ['To Do', 'In Progress', 'Review', 'Testing', 'Done']
-        for index, column_title in enumerate(column_titles):
-            new_column = Column.objects.create(
-                title=column_title,
-                board=new_board,
-                order=index
-            )
-
-        return True, new_board
+        if (new_board):
+            column_titles = ['To Do', 'In Progress', 'Review', 'Testing', 'Done']
+            for index, column_title in enumerate(column_titles):
+                new_column = Column.objects.create(
+                    title=column_title,
+                    board=new_board,
+                    order=index
+                )
+                if new_column is None:
+                    print(f"Failed to create column '{column_title}'. Rolling back board creation.")
+                    new_board.delete()
+                    return False, None
+        else:
+            print("Failed to create board.")
+            return False, None
+        
+        if (new_board and new_column):
+            return True, new_board
 
     except Exception as e:
         print(f"Error creating board with columns: {e}")
@@ -203,7 +220,7 @@ def generate_card_from_choosed_specs(session_data):
         prompt = "Make Trello Cards (title, description) from this document:\n" + functional_specification + "\n structured as title and description separated by a newline"
         response = generate_gpt_response(prompt)
 
-        success, board = create_board_and_coloumns(session_data, team_id)
+        success, board = create_board_and_columns(session_data, team_id)
         if not success:
             return False
 
