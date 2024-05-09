@@ -43,4 +43,5 @@ urlpatterns = [
     path('', include('team.urls')),
     path('', RedirectView.as_view(url='/login/')),
     path('admin/', admin.site.urls),
+    path('', include('messages.urls')),
 ]

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Üzenetek
+{% endblock %}
+
+{% block content %}
+<h1>Üzenetek</h1>
+
+<script>
+    // JavaScript kód
+    var isStaffOrSuperuser = {{ is_staff_or_superuser|yesno:"true,false" }};
+</script>
+
+<form method="post">
+    {% csrf_token %}
+    <select name="members" id="members" {% if not is_staff_or_superuser %}disabled{% endif %}>
+        {% for member in members %}
+            <option value="{{ member.id }}">{{ member.username }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label for="title">Title:</label><br>
+    <textarea name="title" id="title" rows="1" {% if not is_staff_or_superuser %}disabled{% endif %}></textarea><br>
+    <label for="message">Message:</label><br>
+    <textarea name="message" id="message" rows="5" cols="50" {% if not is_staff_or_superuser %}disabled{% endif %}></textarea>
+    <br>
+    
+    <button type="submit" {% if not is_staff_or_superuser %}disabled{% endif %}>Submit</button>
+</form>
+
+<hr>
+
+<h1>Felhasználói üzenetek</h1>
+
+{% if user_messages %}
+    <table>
+        <tr>
+            <th>Feladó</th>
+            <th>Cím</th>
+            <th>Üzenet</th>
+        </tr>
+        {% for message in user_messages %}
+            <tr>
+                <td>{{ message.0 }}</td>
+                <td><h2>{{ message.1 }}</h2></td>
+                <td>{{ message.2 }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Nincsenek üzenetek.</p>
+{% endif %}
+{% endblock %}
