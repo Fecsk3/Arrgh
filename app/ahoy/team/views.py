@@ -1,110 +1,87 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .forms import TeamCreationForm
 from index.models import Team, TeamMember
-from django.contrib.auth.models import User
-
-@login_required
-def team(request):
-    user = request.user
-
-    if user.is_superuser:
-        if request.method == 'POST':
-            form = TeamCreationForm(request.POST)
-            if form.is_valid():
-                senior_id = form.cleaned_data['senior'].id
-                team = Team.objects.create(senior_id=senior_id)
-                members = form.cleaned_data['members']
-                for member_id in members:
-                    TeamMember.objects.create(user_id=member_id, team=team)
-                return redirect('team')
-        else:
-            form = TeamCreationForm()
-
-        context = {
-            'form': form
-        }
-        return render(request, 'team.html', context)
-
-    elif user.is_staff:
-        teams = Team.objects.filter(senior_id=user.id)
-        team_details = []
-
-        for team_obj in teams:
-            team_info = {}
-            team_info['team'] = team_obj.teams_id
-            team_info['members'] = [member.user.username for member in TeamMember.objects.filter(team=team_obj)]
-            team_details.append(team_info)
-
-        context = {
-            'team_details': team_details
-        }
-
-        return render(request, 'team.html', context)
-
-    else:
-        team_ids = TeamMember.objects.filter(user=user).values_list('team_id', flat=True)
-        teams = Team.objects.filter(teams_id__in=team_ids)
-
-        team_details = []
-
-        for team_obj in teams:
-            team_info = {}
-            team_info['team'] = team_obj.teams_id
-            team_info['members'] = [member.user.username for member in TeamMember.objects.filter(team=team_obj)]
-            team_details.append(team_info)
-
-        context = {
-            'team_details': team_details
-        }
-
-        return render(request, 'team.html', context)
-
-
-
-
-
-""" from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .forms import TeamCreationForm, AddMembersForm
-from index.models import Team, TeamMember
-from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
 
 @login_required
 def team(request):
-    user = request.user
+    if not request.user.is_superuser:
+        return redirect('index')
+
+    show_senior_selection = True
+    show_add_members = False
+    can_add_member = False
 
     if request.method == 'POST':
-        if 'add_members' in request.POST:
-            # Handle adding members to a team using AJAX
-            team_id = request.POST.get('team_id')
-            members = request.POST.getlist('members[]')
+        if 'select_senior' in request.POST:
+            form = TeamCreationForm(request.POST)
+            if form.is_valid():
+                team = form.save(commit=False)
+                team.save()
+                team.senior_id = request.POST['senior']
+                team.save()
+                show_senior_selection = False
+                show_add_members = True
+                can_add_member = True
+        elif 'finish' in request.POST:
+            selected_users = request.POST.getlist('selected_users')
+            if 1 <= len(selected_users) <= 4:
+                team_id = Team.objects.latest('id').id
+                for user_id in selected_users:
+                    TeamMember.objects.create(user_id=user_id, team_id=team_id)
+                return redirect('index')
+            else:
+                return render(request, 'team.html', {
+                    'show_senior_selection': show_senior_selection,
+                    'show_add_members': show_add_members,
+                    'available_users': User.objects.filter(is_staff=True),
+                    'assigned_user_ids': TeamMember.objects.values_list('user_id', flat=True),
+                })
 
-            if team_id and members:
-                team = Team.objects.get(id=team_id)
-                for member_id in members:
-                    member = User.objects.get(id=member_id)
-                    TeamMember.objects.create(user=member, team=team)
+    form = TeamCreationForm()
+    return render(request, 'team.html', {
+        'form': form,
+        'show_senior_selection': show_senior_selection,
+        'show_add_members': show_add_members,
+        'available_users': User.objects.filter(is_staff=True),
+        'assigned_user_ids': TeamMember.objects.values_list('user_id', flat=True),
+    })
 
-                return JsonResponse({'success': True})
+def add_member(request):
+    if request.method == 'POST':
+        team_id = request.POST.get('team_id')
+        user_id = request.POST.get('user_id')
+        if TeamMember.objects.filter(team_id=team_id).count() < 4:
+            TeamMember.objects.create(user_id=user_id, team_id=team_id)
+            return JsonResponse({'message': 'Sikeres hozzáadás'}, status=200)
+        else:
+            return JsonResponse({'message': 'A csapat maximális létszáma elérve'}, status=400)
+    else:
+        return JsonResponse({'message': 'Érvénytelen kérés'}, status=400)
 
-    # Retrieve team details based on user role
-    team_details = []
-    if user.is_staff or user.is_superuser:
-        teams = Team.objects.filter(senior=user)
-        for team_obj in teams:
-            team_info = {}
-            team_info['team'] = team_obj.id
-            team_info['members'] = [member.user.username for member in TeamMember.objects.filter(team=team_obj)]
-            team_details.append(team_info)
+def finish_team_creation(request):
+    selected_users = request.POST.getlist('selected_users')
+    if 1 <= len(selected_users) <= 4:
+        team_id = Team.objects.latest('id').id
+        for user_id in selected_users:
+            TeamMember.objects.create(user_id=user_id, team_id=team_id)
+        return redirect('index')
+    else:
+        return render(request, 'team.html', {
+            'show_senior_selection': False,
+            'show_add_members': True,
+            'available_users': User.objects.filter(is_staff=False, is_superuser=False),
+            'assigned_user_ids': TeamMember.objects.values_list('user_id', flat=True),
+        })
 
-    context = {
-        'form': TeamCreationForm(),
-        'staff_users': User.objects.filter(is_staff=True),
-        'available_users': User.objects.filter(is_staff=False, is_superuser=False),
-        'team_details': team_details,
-    }
-    return render(request, 'team.html', context)
- """
+@login_required
+def delete_teams_view(request):
+    if request.user.is_superuser:
+        Team.objects.all().delete()
+        TeamMember.objects.all().delete()
+        return redirect('team')  # Visszairányítás a csapatok oldalra
+    else:
+        # Ha nem superuser, akkor megfelelő kezelés (pl. visszairányítás más oldalra)
+        return redirect('index')  # Példa: visszairányítás a főoldalra

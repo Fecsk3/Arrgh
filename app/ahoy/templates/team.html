@@ -1,11 +1,29 @@
+<!-- team.html -->
+
 {% extends "base.html" %}
 {% load static %}
 
 {% block title %}Csapatok{% endblock %}
 
 {% block content %}
-<div class="team-container" style="padding: 20px;">
-  {% if request.user.is_superuser %}
+<div class="team-container">
+
+  {% if show_senior_selection %}
+    <form method="post" id="select-senior-form">
+      {% csrf_token %}
+      <label for="senior">Senior:</label>
+      <select name="senior" id="senior">
+        {% for user in senior_users %}
+            {% if user.is_staff %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endif %}
+        {% endfor %}
+      </select>
+      <button type="submit" name="select_senior">Mentés</button>
+    </form>
+  {% endif %}
+
+  {% if request.user.is_superuser and not show_senior_selection %}
     <div class="team-card">
       <div class="team-card-header">
         <h2 class="team-card-title">Új csapat létrehozása</h2>
@@ -14,135 +32,30 @@
         <form method="post">
           {% csrf_token %}
           {{ form.as_p }}
-          <button type="submit">Mentés</button>
+
+          {% if show_add_members %}
+            <h3>Kit szeretne a csapatba belerakni?</h3>
+            <form method="post" action="{% url 'finish_team_creation' %}">
+              {% csrf_token %}
+              <ul>
+                {% for user in available_users %}
+                  {% if user.id not in assigned_user_ids and not user.is_staff and not user.is_superuser %}
+                    <li>
+                      <label>
+                        <input type="checkbox" name="selected_users" value="{{ user.id }}">
+                        {{ user.username }}
+                      </label>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+              <button type="submit">Befejezés</button>
+            </form>
+          {% endif %}
         </form>
       </div>
     </div>
   {% endif %}
-
-  {% for team_info in team_details %}
-    <div class="team-card">
-      <div class="team-card-header">
-        <h2 class="team-card-title">{{ team_info.team }}. csapat</h2>
-      </div>
-      <div class="team-card-body">
-        <ul>
-          {% for member in team_info.members %}
-            <li>{{ member }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-    {% if forloop.counter|divisibleby:3 and not forloop.last %}
-      </div><div class="team-container" style="padding: 20px;">
-    {% endif %}
-  {% endfor %}
 </div>
-
 <link rel="stylesheet" href="{% static 'css/team.css' %}" type="text/css"/>
 {% endblock %}
-
-
-
-
-
-
-{% comment %}
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}Team Management{% endblock %}
-
-{% block content %}
-<link rel="stylesheet" href="{% static 'css/team.css' %}">
-
-<h2>Team Management</h2>
-
-<form method="post" action="{% url 'team' %}">
-    {% csrf_token %}
-    <label for="senior">Senior:</label>
-    <select name="senior" id="senior">
-        {% for staff_user in staff_users %}
-            <option value="{{ staff_user.id }}">{{ staff_user.username }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit" class="btn">Create Team</button>
-</form>
-
-<button id="addMembersBtn" class="btn">Add Team Members</button>
-
-<div id="memberSelectionModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Select Team Members</h3>
-        <form id="memberSelectionForm">
-            {% csrf_token %}
-            {% for user in available_users %}
-                <label>
-                    <input type="checkbox" name="members[]" value="{{ user.id }}">
-                    {{ user.username }}
-                </label>
-            {% endfor %}
-            <button type="button" id="saveMembersBtn" class="btn">Save Members</button>
-        </form>
-    </div>
-</div>
-
-{% if team_details %}
-    <h3>Team Details</h3>
-    <ul>
-        {% for team_info in team_details %}
-            <li>
-                <strong>Team ID:</strong> {{ team_info.team }}
-                <ul>
-                    {% for member in team_info.members %}
-                        <li>{{ member }}</li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-<script>
-    var modal = document.getElementById('memberSelectionModal');
-    var btn = document.getElementById('addMembersBtn');
-    var span = document.getElementsByClassName('close')[0];
-    var saveBtn = document.getElementById('saveMembersBtn');
-
-    btn.onclick = function() {
-        modal.style.display = 'block';
-    };
-
-    span.onclick = function() {
-        modal.style.display = 'none';
-    };
-
-    saveBtn.onclick = function() {
-        var selectedMembers = [];
-        var checkboxes = document.querySelectorAll('input[name="members[]"]:checked');
-        checkboxes.forEach(function(checkbox) {
-            selectedMembers.push(checkbox.value);
-        });
-
-        // Send AJAX request to add selected members to the team
-        var teamId = document.getElementById('teamId').value;
-        var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '{% url "team" %}');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('X-CSRFToken', csrfToken);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                modal.style.display = 'none';
-                location.reload(); // Refresh page to update team details
-            } else {
-                alert('Failed to save members. Please try again.');
-            }
-        };
-        xhr.send(JSON.stringify({ team_id: teamId, members: selectedMembers }));
-    };
-</script>
-{% endblock %}
-{% endcomment %}
