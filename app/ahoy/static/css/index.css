@@ -1,6 +1,4 @@
-/* index.css */
-
-/* Stílus a táblázat fejlécéhez (thead) */
+/* Alapértelmezett táblázat stílus */
 table {
     border-collapse: collapse; /* Cellák összevonása egyetlen keret köré */
     width: 100%; /* Teljes szélességű táblázat */
@@ -8,27 +6,64 @@ table {
     margin: 0 auto; /* Táblázat középre igazítása */
 }
 
+/* Cellák alapstílusa */
 table, th, td {
     border: 1px solid black; /* Vonalak a cellák körül */
     padding: 8px; /* Belső tér a cellákban */
     text-align: center; /* Szöveg középre igazítása a cellákban */
 }
 
-/* Stílus a táblázat fejlécéhez (thead) */
+/* Fejléc (thead) stílusai */
 thead {
     background-color: #f2f2f2; /* Háttérszín a fejléc soraihoz */
 }
 
-/* Stílus a táblázat tartalmához (tbody) */
+/* Tartalom (tbody) stílusai */
 tbody {
     background-color: #ffffff; /* Háttérszín a táblázat tartalmához */
 }
 
-/* Stílus a táblázat soraihoz (tr) */
+/* Páros sorok stílusai */
 tr:nth-child(even) {
     background-color: #f9f9f9; /* Páros sorok háttérszíne */
 }
 
+/* Egérrel föléhúzott sorok stílusai */
 tr:hover {
     background-color: #ddd; /* Egérrel föléhúzott sorok háttérszíne */
+}
+
+/* Reszponzív stílus kisebb képernyőkhöz */
+@media screen and (max-width: 600px) {
+    /* Táblázat oszlopok összecsukása */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    /* Fejléc (thead) formázása */
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    /* Cellák (td) formázása */
+    td {
+        border: none;
+        border-bottom: 1px solid #ddd; /* Alsó elválasztó vonal a cellák között */
+        position: relative;
+        padding-left: 50%; /* Bal margó beállítása a cellákhoz */
+    }
+
+    /* Cellák előtti tartalom megjelenítése */
+    td:before {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        content: attr(data-label); /* Tartalom beállítása a ::before pszeudoelemmel */
+        font-weight: bold;
+    }
 }

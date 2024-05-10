@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 
 class Team(models.Model):
     teams_id = models.AutoField(primary_key=True)
@@ -16,3 +17,13 @@ class TeamMember(models.Model):
     
     def __str__(self):
         return f'{self.user.username} - {self.team.teams_id}'
+
+class Message(models.Model):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    to_user_id = models.IntegerField(validators=[MinValueValidator(-1)])
+    message = models.TextField()
+    read = models.BooleanField(default=False)
+    title = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"Message {self.id} - {self.title}"

@@ -1,0 +1,84 @@
+/* Alapértelmezett táblázat stílus */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Táblázat fejléc */
+table th {
+    background-color: rgb(53, 52, 52);
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+/* Táblázat cella stílus */
+table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+}
+
+/* Alternatív sorok színének megváltoztatása */
+table tr:nth-child(even) {
+    background-color: white; /* Szürke háttér */
+    color: black;
+}
+
+table tr:nth-child(odd) {
+    background-color: #4CAF50; /* Zöld háttér */
+    color: white;
+}
+
+/* Gombok stílusai */
+form button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* Gombok hover stílusa */
+form button:hover {
+    background-color: #45a049;
+}
+
+/* Reszponzív táblázat */
+@media screen and (max-width: 600px) {
+    /* Táblázat oszlopok összecsukása */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    
+    /* Táblázat fejléc formázása */
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    /* Táblázat cellák formázása */
+    tr {
+        border: 1px solid #ccc;
+    }
+    
+    td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+    }
+    
+    td:before {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        content: attr(data-label);
+        font-weight: bold;
+    }
+}

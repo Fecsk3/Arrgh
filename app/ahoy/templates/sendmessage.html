@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Send message{% endblock %}
+
+{% block content %}
+<br>
+<link rel="stylesheet" href="{% static 'css/sendmessage.css' %}" type="text/css"/>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Send</button>
+</form>
+<link rel="stylesheet" href="{% static 'css/sendmessage.css' %}" type="text/css"/>
+{% endblock %}
