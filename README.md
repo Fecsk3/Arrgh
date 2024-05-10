@@ -40,4 +40,6 @@ Egy nyelvi modell integrálásával az alkalmazás még hatékonyabbá válhat a
 ---
 
 ## Senior
++ ???????????
+
 
