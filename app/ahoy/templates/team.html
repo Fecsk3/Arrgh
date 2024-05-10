@@ -1,5 +1,3 @@
-<!-- team.html -->
-
 {% extends "base.html" %}
 {% load static %}
 
@@ -7,55 +5,43 @@
 
 {% block content %}
 <div class="team-container">
+  {% comment %}
+  <form method="post" action="{% url 'delete_teams' %}">
+    {% csrf_token %}
+    <button type="submit">Csapatok törlése</button>
+  </form>
+  {% endcomment %}
 
   {% if show_senior_selection %}
-    <form method="post" id="select-senior-form">
+    <form method="post">
       {% csrf_token %}
-      <label for="senior">Senior:</label>
-      <select name="senior" id="senior">
-        {% for user in senior_users %}
-            {% if user.is_staff %}
-                <option value="{{ user.id }}">{{ user.username }}</option>
-            {% endif %}
-        {% endfor %}
-      </select>
+      {{ senior_form.as_p }}
       <button type="submit" name="select_senior">Mentés</button>
     </form>
-  {% endif %}
-
-  {% if request.user.is_superuser and not show_senior_selection %}
+  {% else %}
     <div class="team-card">
       <div class="team-card-header">
         <h2 class="team-card-title">Új csapat létrehozása</h2>
       </div>
       <div class="team-card-body">
-        <form method="post">
+        <h3>Senior: {{ selected_senior_username }}</h3>
+        <h3>Kit szeretne a csapatba belerakni?</h3>
+        <form method="post" action="{% url 'finish_team_creation' %}">
           {% csrf_token %}
-          {{ form.as_p }}
-
-          {% if show_add_members %}
-            <h3>Kit szeretne a csapatba belerakni?</h3>
-            <form method="post" action="{% url 'finish_team_creation' %}">
-              {% csrf_token %}
-              <ul>
-                {% for user in available_users %}
-                  {% if user.id not in assigned_user_ids and not user.is_staff and not user.is_superuser %}
-                    <li>
-                      <label>
-                        <input type="checkbox" name="selected_users" value="{{ user.id }}">
-                        {{ user.username }}
-                      </label>
-                    </li>
-                  {% endif %}
-                {% endfor %}
-              </ul>
-              <button type="submit">Befejezés</button>
-            </form>
-          {% endif %}
+          {{ team_form.as_p }}
+          
+          <!-- Checkbox-ok az engedélyezett felhasználókhoz -->
+          {% for user in eligible_users %}
+            <input type="checkbox" name="selected_users" value="{{ user.id }}" id="user_{{ user.id }}">
+            <label for="user_{{ user.id }}">{{ user.username }}</label><br>
+          {% endfor %}
+          
+          <button type="submit">Új csapat létrehozása</button>
         </form>
       </div>
     </div>
   {% endif %}
+
 </div>
 <link rel="stylesheet" href="{% static 'css/team.css' %}" type="text/css"/>
 {% endblock %}

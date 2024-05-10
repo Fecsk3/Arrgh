@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import TeamCreationForm
+from .forms import SeniorSelectionForm, TeamCreationForm
 from index.models import Team, TeamMember
 from django.http import JsonResponse
 
@@ -11,43 +11,29 @@ def team(request):
         return redirect('index')
 
     show_senior_selection = True
-    show_add_members = False
-    can_add_member = False
+    selected_senior_username = None
 
     if request.method == 'POST':
         if 'select_senior' in request.POST:
-            form = TeamCreationForm(request.POST)
+            form = SeniorSelectionForm(request.POST)
             if form.is_valid():
-                team = form.save(commit=False)
-                team.save()
-                team.senior_id = request.POST['senior']
-                team.save()
+                selected_senior = form.cleaned_data['senior']
+                # Csapat létrehozása a kiválasztott senior felhasználóval
+                team = Team.objects.create(senior=selected_senior)
+                selected_senior_username = selected_senior.username
                 show_senior_selection = False
-                show_add_members = True
-                can_add_member = True
-        elif 'finish' in request.POST:
-            selected_users = request.POST.getlist('selected_users')
-            if 1 <= len(selected_users) <= 4:
-                team_id = Team.objects.latest('id').id
-                for user_id in selected_users:
-                    TeamMember.objects.create(user_id=user_id, team_id=team_id)
-                return redirect('index')
-            else:
-                return render(request, 'team.html', {
-                    'show_senior_selection': show_senior_selection,
-                    'show_add_members': show_add_members,
-                    'available_users': User.objects.filter(is_staff=True),
-                    'assigned_user_ids': TeamMember.objects.values_list('user_id', flat=True),
-                })
 
-    form = TeamCreationForm()
+    # Szűrjük ki azokat a felhasználókat, akik nem 'is_staff', nem 'is_superuser' és nem szerepelnek a TeamMember táblában
+    eligible_users = User.objects.filter(is_staff=False, is_superuser=False).exclude(id__in=TeamMember.objects.values_list('user_id', flat=True))
+
+    senior_form = SeniorSelectionForm()
     return render(request, 'team.html', {
-        'form': form,
+        'senior_form': senior_form,
         'show_senior_selection': show_senior_selection,
-        'show_add_members': show_add_members,
-        'available_users': User.objects.filter(is_staff=True),
-        'assigned_user_ids': TeamMember.objects.values_list('user_id', flat=True),
+        'selected_senior_username': selected_senior_username,
+        'eligible_users': eligible_users,  # Adjuk át a template-nek az engedélyezett felhasználók listáját
     })
+
 
 def add_member(request):
     if request.method == 'POST':
@@ -61,27 +47,26 @@ def add_member(request):
     else:
         return JsonResponse({'message': 'Érvénytelen kérés'}, status=400)
 
+@login_required
 def finish_team_creation(request):
-    selected_users = request.POST.getlist('selected_users')
-    if 1 <= len(selected_users) <= 4:
-        team_id = Team.objects.latest('id').id
-        for user_id in selected_users:
-            TeamMember.objects.create(user_id=user_id, team_id=team_id)
-        return redirect('index')
-    else:
-        return render(request, 'team.html', {
-            'show_senior_selection': False,
-            'show_add_members': True,
-            'available_users': User.objects.filter(is_staff=False, is_superuser=False),
-            'assigned_user_ids': TeamMember.objects.values_list('user_id', flat=True),
-        })
+    if request.method == 'POST':
+        selected_users = request.POST.getlist('selected_users')
+        if 1 <= len(selected_users) <= 4:
+            # Lekérjük a legutolsó Team rekordot
+            latest_team = Team.objects.latest('teams_id')
+            team_id = latest_team.teams_id
+
+            # Iterálunk a kiválasztott felhasználókon és beszúrjuk őket a TeamMember táblába
+            for user_id in selected_users:
+                # Beszúrás a TeamMember táblába az adott csapat (team_id) és felhasználó (user_id) alapján
+                TeamMember.objects.create(team_id=team_id, user_id=user_id)
+            return redirect('index')
+
+    return redirect('team')  # Ha nincs kiválasztott user vagy a feltételek nem teljesültek, visszatérünk a team oldalra
 
 @login_required
 def delete_teams_view(request):
     if request.user.is_superuser:
         Team.objects.all().delete()
         TeamMember.objects.all().delete()
-        return redirect('team')  # Visszairányítás a csapatok oldalra
-    else:
-        # Ha nem superuser, akkor megfelelő kezelés (pl. visszairányítás más oldalra)
-        return redirect('index')  # Példa: visszairányítás a főoldalra
+    return redirect('team')  # Minden esetben visszatérünk a team oldalra

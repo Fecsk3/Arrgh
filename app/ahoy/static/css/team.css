@@ -1,70 +1,96 @@
-/* static/css/team.css */
+/* team.css */
 
-/* Általános formázás */
+/* Container formázása */
 .team-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
     padding: 20px;
-}
+  }
 
-.team-card {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-top: 20px;
-}
-
-.team-card-header {
-    background-color: #f0f0f0;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.team-card-title {
-    margin: 0;
-    color: #333;
-}
-
-.team-card-body {
-    padding: 20px;
-}
-
-/* Senior kiválasztása */
-form#select-senior-form {
-    margin-bottom: 20px;
-}
-
-#senior {
+#id_senior {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-/* Új csapat létrehozása */
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    margin-bottom: 10px;
-}
-
-label {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+  }
+  
+  
+  /* Kártya formázása */
+  .team-card {
+    width: 100%;
+    max-width: 500px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Kártya fejléce */
+  .team-card-header {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  /* Cím formázása */
+  .team-card-title {
+    font-size: 24px;
+    color: #007bff;
+  }
+  
+  /* Tartalom formázása */
+  .team-card-body {
+    text-align: left;
+  }
+  
+  /* Gombok formázása */
+  button {
     display: block;
-    cursor: pointer;
-}
-
-/* Befejezés gomb */
-button[type="submit"] {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #ffffff;
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
+  }
+  
+  button:hover {
     background-color: #0056b3;
-}
+  }
+  
+  /* Checkboxok és címkék formázása */
+  input[type="checkbox"] {
+    margin-right: 10px;
+    transform: translateY(2px); /* Kicsit lejjebb mozgatjuk a checkboxot */
+  }
+  
+  label {
+    font-weight: bold;
+    color: #333333;
+  }
+  
+  /* Legördülő lista formázása */
+  select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+  }
+  
+  /* Reszponzivitás */
+  @media (max-width: 600px) {
+    .team-card {
+      max-width: 90%;
+    }
+  }
+  
