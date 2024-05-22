@@ -1,69 +1,37 @@
 /* Alapértelmezett táblázat stílus */
 table {
-    border-collapse: collapse; /* Cellák összevonása egyetlen keret köré */
     width: 100%; /* Teljes szélességű táblázat */
-    max-width: 800px; /* Maximális szélesség beállítása */
-    margin: 0 auto; /* Táblázat középre igazítása */
+    border-collapse: collapse; /* Cellák összevonása egyetlen keret köré */
+    font-family: Arial, sans-serif; /* Betűtípus beállítása */
+    border: 2px solid #ddd; /* Táblázat keretének beállítása */
 }
 
-/* Cellák alapstílusa */
-table, th, td {
-    border: 1px solid #ccc; /* Vonalak a cellák körül */
-    padding: 12px; /* Belső tér a cellákban */
-    text-align: center; /* Szöveg középre igazítása a cellákban */
-}
-
-/* Fejléc (thead) stílusai */
+/* Fejléc sor stílusai */
 thead {
     background-color: #f2f2f2; /* Háttérszín a fejléc soraihoz */
 }
 
-/* Tartalom (tbody) stílusai */
-tbody {
-    background-color: #ffffff; /* Háttérszín a táblázat tartalmához */
+/* Fejléc cella stílusai */
+th {
+    padding-top: 12px; /* Felső belső tér beállítása a fejléc cellákban */
+    padding-bottom: 12px; /* Alsó belső tér beállítása a fejléc cellákban */
+    text-align: left; /* Szöveg balra igazítása a fejléc cellákban */
+    background-color: #4CAF50; /* Háttérszín a fejléc cellákhoz */
+    color: white; /* Betűszín beállítása a fejléc cellákhoz */
+}
+
+/* Tartalom cella stílusai */
+td {
+    padding: 8px; /* Belső tér beállítása a tartalom cellákban */
+    border-bottom: 1px solid #ddd; /* Alsó elválasztó vonal beállítása a tartalom cellákhoz */
 }
 
 /* Páros sorok stílusai */
 tbody tr:nth-child(even) {
-    background-color: #f9f9f9; /* Páros sorok háttérszíne */
+    background-color: #f2f2f2; /* Páros sorok háttérszíne */
 }
 
 /* Egérrel föléhúzott sorok stílusai */
 tbody tr:hover {
-    background-color: #f0f0f0; /* Egérrel föléhúzott sorok háttérszíne */
-}
-
-/* Reszponzív stílus kisebb képernyőkhöz */
-@media screen and (max-width: 600px) {
-    /* Táblázat oszlopok összecsukása */
-    table, thead, tbody, th, td, tr {
-        display: block;
-    }
-
-    /* Fejléc (thead) formázása */
-    thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-
-    /* Cellák (td) formázása */
-    td {
-        border: none;
-        border-bottom: 1px solid #ddd; /* Alsó elválasztó vonal a cellák között */
-        position: relative;
-        padding-left: 50%; /* Bal margó beállítása a cellákhoz */
-    }
-
-    /* Cellák előtti tartalom megjelenítése */
-    td:before {
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        content: attr(data-label); /* Tartalom beállítása a ::before pszeudoelemmel */
-        font-weight: bold;
-    }
+    background-color: #ddd; /* Egérrel föléhúzott sorok háttérszíne */
 }
