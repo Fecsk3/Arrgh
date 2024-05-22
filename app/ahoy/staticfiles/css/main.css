@@ -6,16 +6,16 @@ body {
     overflow-x: hidden;
 }
 
-/* #region NAVIGATION */
 nav {
-    height: 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     background: #1a1a1a;
     color: white;
     padding: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    z-index: 1000;
 }
 
 nav ul {
@@ -62,18 +62,24 @@ nav a:hover {
     align-content: center;
 }
 
-/* #endregion */
+main {
+    position: relative;
+    padding-top: 70px; /* A nav magassága */
+    padding-bottom: 70px; /* A footer magassága */
+    overflow-y: auto; /* Csak a main tartalom tekerhető */
+}
+
 
 footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     background: rgba(26, 26, 26, 0.5);
     color: white;
     text-align: center;
     padding: 10px;
     box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    font-size: 14px;
 }
 
 .dropdown {

@@ -19,7 +19,6 @@ from django.urls import include, path, re_path
 from django.views.generic import RedirectView
 from django.views.static import serve
 from django.conf import settings
-from documents.views import documents_markdown_files_list, download_markdown_file
 from django.conf.urls import handler404
 from django.shortcuts import render
 
@@ -31,13 +30,12 @@ handler404 = custom_404
 
 
 urlpatterns = [
-    path('documents/', documents_markdown_files_list, name='documents'),
-    path('download-markdown-file/<int:file_id>/', download_markdown_file, name='download_markdown_file'),
     re_path(r'static/(?P<path>.*)', serve, {'document_root': settings.STATIC_ROOT}),
     path('', include('index.urls')),
     path('', include('register.urls')),
     path('', include('login.urls')),
     path('', include('kanban.urls')),
+    path('', include('documents.urls')),
     path('', include('gpt.urls')),
     path('', include('profil.urls')),
     path('', include('team.urls')),

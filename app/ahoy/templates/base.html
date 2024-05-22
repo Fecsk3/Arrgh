@@ -15,6 +15,7 @@
             {% if request.user.is_superuser %}
                 <li><a href="{% url 'index' %}">Index</a></li>
                 <li><a href="{% url 'kanban' %}">Kanban</a></li>
+                <li><a href="{% url 'documents' %}">Documents</a></li>
                 <li><a href="{% url 'team' %}">Team</a></li>
                 <li class="dropdown">
                     <a>Messages</a>
