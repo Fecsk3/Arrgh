@@ -9,6 +9,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from faker import Faker
 from kanban.models import Board, Column, Card
+from index.models import Team
 
 fake = Faker()
 
@@ -16,14 +17,18 @@ class Command(BaseCommand):
     help = 'Seed the database with sample data for Kanban board'
 
     def add_arguments(self, parser):
-        parser.add_argument('username', type=str, help='Username for the user to create the board')
+        parser.add_argument('team_id', type=int, help='Team id for which to create the board')
 
     def handle(self, *args, **kwargs):
-        username = kwargs['username']
+        teams_id = kwargs['team_id']
 
-        user = User.objects.get(username=username)
+        try:
+            team = Team.objects.get(teams_id=teams_id)
+        except Team.DoesNotExist:
+            self.stdout.write(self.style.ERROR(f"Team with ID {teams_id} does not exist."))
+            return
 
-        board = Board.objects.create(title='Sample Board', created_by=user)
+        board = Board.objects.create(title='Sample Board', created_by=team)
 
         columns = ['To Do', 'In Progress', 'Review', 'Testing', 'Done']
 
@@ -40,4 +45,4 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Sample data created successfully.'))
 
-# python manage.py seed_kanban myusername
+# python manage.py seed_kanban team_id

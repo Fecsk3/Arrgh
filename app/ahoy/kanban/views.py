@@ -9,16 +9,17 @@ from pathlib import Path
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 @login_required()
 def kanban(request):
     user_id = User.objects.get(id=request.user.id) 
-    is_senior = Team.objects.filter(senior=user_id).exists()
+    is_senior = Team.objects.filter(senior_id=user_id).exists()
     senior_teams = None
     boards = None
 
     if is_senior:
-        senior_teams = Team.objects.filter(senior=user_id)
+        senior_teams = Team.objects.filter(senior_id=user_id)
         selected_team_id = None
 
         if request.method == 'POST' and 'generate_board' in request.POST:
@@ -40,13 +41,9 @@ def kanban(request):
             boards = Board.objects.filter(created_by__in=senior_teams)
         
         return render(request, 'kanban.html', {'senior_teams': senior_teams, 'is_senior': is_senior, 'boards': boards})
-
-        # docs = load_team_docs(team_id)
-        # request.session['requirements_specification'] = docs[0]
-        # request.session['functional_specification'] = docs[1]
-        # request.session['system_plan'] = docs[2]
-    # boards = Board.objects.prefetch_related('columns__cards').all()
-    # return render(request, 'kanban.html', {'boards': boards, 'senior_teams': senior_teams, 'is_senior': is_senior})
+    else:
+        boards = Board.objects.prefetch_related('columns__cards').all()
+        return render(request, 'kanban.html', {'boards': boards})
 
 def get_user_team_id(user_id):
     try:
@@ -215,18 +212,32 @@ def create_board_and_columns(team_id):
     
 def generate_card_from_choosed_specs(session_data):
     try:
-        team_id = session_data['selected_team_id']
+        team_id = session_data.get('selected_team_id')
         functional_specification = session_data.get('functional_specification', '')
+
+        if not team_id:
+            print("No team selected.")
+            return False
+
+        if not functional_specification:
+            print("No functional specification provided.")
+            return False
+
         prompt = "Make Trello Cards (title, description) from this document:\n" + functional_specification + "\n structured as title and description separated by a newline"
         response = generate_gpt_response(prompt)
 
-        success, board = create_board_and_columns(session_data, team_id)
-        if not success:
+        if not response:
+            print("No response from GPT.")
             return False
 
-        first_column = board.columns.first()
+        success, new_board = create_board_and_columns(team_id)
+        if not success:
+            print("Failed to create board and columns.")
+            return False
 
-        card_data_list = response.split('\n\n') 
+        first_column = new_board.columns.first()
+
+        card_data_list = response.split('\n\n')
 
         max_order = first_column.cards.aggregate(Max('order'))['order__max'] or 0
 
@@ -237,9 +248,10 @@ def generate_card_from_choosed_specs(session_data):
                 title=title.strip(),
                 description=description.strip(),
                 column=first_column,
-                order = max_order + 1,
+                order=max_order + 1,
             )
 
+        print("Trello cards generated successfully.")
         return True
 
     except Exception as e:

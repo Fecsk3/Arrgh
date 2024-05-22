@@ -10,3 +10,6 @@ class Project(models.Model):
     deliverables = models.TextField()
     timeline = models.TextField()
     additional_info = models.TextField(blank=True) 
+
+    def __str__(self):
+        return self.title
