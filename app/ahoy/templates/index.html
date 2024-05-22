@@ -21,23 +21,21 @@
                 <thead>
                     <tr>
                         <th>Team ID</th>
+                        <th>Senior</th>
                         <th>Csapattagok</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
-                    <!-- Itt jöhetnek a táblázat sorai -->
+                <tbody id="superuserTableBody">
                     {% for team in teams %}
-                        {% if team.senior_id == request.user.id %}
-                            <tr>
-                                <td>{{ team.teams_id }}</td>
-                                <td>
-                                    {% for member in team.teammember_set.all %}
-                                        {{ member.user.username }}
-                                        {% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        {% endif %}
+                        <tr>
+                            <td>{{ team.teams_id }}</td>
+                            <td>
+                                {% for member in team.teammember_set.all %}
+                                    {{ member.user.username }}
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -52,8 +50,7 @@
                         <th>Csapattagok</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
-                    <!-- Itt jöhetnek a táblázat sorai -->
+                <tbody id="staffTableBody">
                     {% for team in teams %}
                         {% if team.senior_id == request.user.id %}
                             <tr>
@@ -71,7 +68,9 @@
             </table>
         </div>
     {% else %}
-        <p>Ezt csak a user látja</p>
+        <div class="centered-content">
+            <p>Nincs megfelelő jogosultság a táblázat megtekintéséhez.</p>
+        </div>
     {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -83,14 +82,39 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response && response.data) {
-                        var tableBody = $('#tableBody');
-                        tableBody.empty(); // Táblázat tartalmának törlése
+                        var superuserTableBody = $('#superuserTableBody');
+                        superuserTableBody.empty();
+
+                        response.data.forEach(function(row) {
+                            var membersContent = row.members ? row.members : 'Nincsenek csapattagok';
+
+                            var newRow = '<tr><td>' + row.team_id + '</td><td>' + row.senior + '</td><td>' + membersContent + '</td></tr>';
+                            superuserTableBody.append(newRow);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '{% url "get_staff_table_data" %}',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response && response.data) {
+                        var staffTableBody = $('#staffTableBody');
+                        staffTableBody.empty();
 
                         response.data.forEach(function(row) {
                             var membersContent = row.members ? row.members : 'Nincsenek csapattagok';
 
                             var newRow = '<tr><td>' + row.team_id + '</td><td>' + membersContent + '</td></tr>';
-                            tableBody.append(newRow);
+                            staffTableBody.append(newRow);
                         });
                     }
                 },
@@ -101,104 +125,3 @@
         });
     </script>
 {% endblock %}
-
-{% comment %}
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}Ahoy{% endblock %}
-
-{% block content %}
-    {% if messages %}
-        {% for message in messages %}
-            <script>
-                window.onload = function() {
-                    alert("{{ message }}");
-                };
-            </script>
-        {% endfor %}
-    {% endif %}
-
-    <div class="centered-content">
-        {% if request.user.is_superuser %}
-            <h2>Superuser táblázata</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Team ID</th>
-                        {% if request.user.is_superuser %}
-                            <th>Senior</th>
-                        {% endif %}
-                        <th>Csapattagok</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- Itt jöhetnek a táblázat sorai -->
-                    {% for row in data %}
-                        <tr>
-                            <td>{{ row.team_id }}</td>
-                            {% if request.user.is_superuser %}
-                                <td>{{ row.senior }}</td>
-                            {% endif %}
-                            <td>{{ row.members }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% elif request.user.is_staff %}
-            <h2>Staff táblázata</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Team ID</th>
-                        <th>Csapattagok</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- Itt jöhetnek a táblázat sorai -->
-                    {% for row in data %}
-                        <tr>
-                            <td>{{ row.team_id }}</td>
-                            <td>{{ row.members }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Ezt csak a user látja</p>
-        {% endif %}
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $.ajax({
-                url: '{% url "get_superuser_table_data" %}',
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response && response.data) {
-                        var tableBody = $('#tableBody');
-                        tableBody.empty(); // Táblázat tartalmának törlése
-
-                        response.data.forEach(function(row) {
-                            var membersContent = row.members ? row.members : 'Nincsenek csapattagok';
-
-                            var newRow = '<tr><td>' + row.team_id + '</td>';
-                            {% if request.user.is_superuser %}
-                                newRow += '<td>' + row.senior + '</td>';
-                            {% endif %}
-                            newRow += '<td>' + membersContent + '</td></tr>';
-                            tableBody.append(newRow);
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
-    </script>
-{% endblock %}
-
-{% endcomment %}

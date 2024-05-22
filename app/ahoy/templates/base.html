@@ -16,11 +16,11 @@
                 <li><a href="{% url 'index' %}">Index</a></li>
                 <li><a href="{% url 'kanban' %}">Kanban</a></li>
                 <li><a href="{% url 'documents' %}">Documents</a></li>
-                <li><a href="{% url 'team' %}">Team</a></li>
+                <li><a href="{% url 'team' %}">Create Team</a></li>
                 <li class="dropdown">
                     <a>Messages</a>
                     <div class="dropdown-content">
-                        <a href="{% url 'send_message' %}">Send message</a>
+                        <a href="{% url 'send_message' %}">New message</a>
                         <a href="{% url 'messages' %}">Sent messages</a>
                     </div>
                 </li>
@@ -30,14 +30,21 @@
                 <li><a href="{% url 'kanban' %}">Kanban</a></li>
                 <li><a href="{% url 'gpt' %}">GPT</a></li>
                 <li><a href="{% url 'documents' %}">Documents</a></li>
-                <li><a href="{% url 'profil' %}">Profil</a></li>
-                <li><a href="{% url 'team' %}">Team</a></li>
-                <li><a href="{% url 'messages' %}">Messages</a></li>
+                <li class="dropdown">
+                    <a>Messages</a>
+                    <div class="dropdown-content">
+                        <a href="{% url 'send_message' %}">New message</a>
+                        <a href="{% url 'messages' %}">Sent messages</a>
+                        <a>Recieved messages</a>
+                    </div>
+                </li>
+                <li><a href="{% url 'profil' %}">Profile</a></li>
                 <li style="margin-left: auto;"><a href="{% url 'logout_view' %}" class="logout">Log out</a></li>
             {% else %}
                 <li><a href="{% url 'index' %}">Index</a></li>
                 <li><a href="{% url 'kanban' %}">Kanban</a></li>
                 <li><a href="{% url 'documents' %}">Documents</a></li>
+                <li><a>Messages</a></li>
                 <li><a href="{% url 'profil' %}">Profil</a></li>
                 <li style="margin-left: auto;"><a href="{% url 'logout_view' %}" class="logout">Log out</a></li>
             {% endif %}

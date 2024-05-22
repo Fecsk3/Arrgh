@@ -8,8 +8,8 @@ table {
 
 /* Cellák alapstílusa */
 table, th, td {
-    border: 1px solid black; /* Vonalak a cellák körül */
-    padding: 8px; /* Belső tér a cellákban */
+    border: 1px solid #ccc; /* Vonalak a cellák körül */
+    padding: 12px; /* Belső tér a cellákban */
     text-align: center; /* Szöveg középre igazítása a cellákban */
 }
 
@@ -24,13 +24,13 @@ tbody {
 }
 
 /* Páros sorok stílusai */
-tr:nth-child(even) {
+tbody tr:nth-child(even) {
     background-color: #f9f9f9; /* Páros sorok háttérszíne */
 }
 
 /* Egérrel föléhúzott sorok stílusai */
-tr:hover {
-    background-color: #ddd; /* Egérrel föléhúzott sorok háttérszíne */
+tbody tr:hover {
+    background-color: #f0f0f0; /* Egérrel föléhúzott sorok háttérszíne */
 }
 
 /* Reszponzív stílus kisebb képernyőkhöz */

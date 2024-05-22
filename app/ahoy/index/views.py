@@ -37,35 +37,16 @@ def get_superuser_table_data(request):
     print(data)  # Kiírjuk a data változó tartalmát a terminálra
 
     return JsonResponse({'data': data})
-    
 
-
-
-""" 
-@login_required
-def get_superuser_table_data(request):
-    # Lekérdezi az összes csapatot (teams_id)
-    teams = Team.objects.all()
-
+def get_staff_table_data(request):
+    user_id = request.user.id
+    teams = Team.objects.filter(senior_id=user_id)
     data = []
+
     for team in teams:
-        # Az adott csapat (teams_id) id-ja
-        team_id = team.teams_id
-        
-        # A csapat seniorjának felhasználóneve
-        senior_user = User.objects.get(id=team.senior_id)  # Feltételezve, hogy van 'senior_id' mező a Team modelled
-        senior_username = senior_user.username
+        member_usernames = [member.user.username for member in TeamMember.objects.filter(team=team)]
+        data.append({'team_id': team.teams_id, 'members': ', '.join(member_usernames)})
 
-        # A csapat tagjainak felhasználónevei
-        members = TeamMember.objects.filter(team_id=team_id)
-        member_usernames = [User.objects.get(id=member.user_id).username for member in members]
-
-        # Táblázat adatok hozzáadása
-        data.append({
-            'team_id': team_id,
-            'senior': senior_username,
-            'members': ', '.join(member_usernames)
-        })
+    print(data) 
 
     return JsonResponse({'data': data})
- """
