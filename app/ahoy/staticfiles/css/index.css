@@ -23,6 +23,7 @@ th {
 /* Tartalom cella stílusai */
 td {
     padding: 8px; /* Belső tér beállítása a tartalom cellákban */
+    background-color: #727c72;
     border-bottom: 1px solid #ddd; /* Alsó elválasztó vonal beállítása a tartalom cellákhoz */
 }
 
